@@ -1,0 +1,133 @@
+﻿var DATA = [
+    {
+        "id": 1,
+        "name": "Image-1",
+        "image": "./images/room/kitchen.jpg",
+        "annotation": [
+            {
+                "pointX": -836.2664263394703,
+                "pointY": -313.3556963558139,
+                "pointZ": 111.65360687035151,
+                "id": 1,
+                "icon": "./images/icon/icon2.png",
+                "label": "Living Room",
+                "title": "Living Room",
+                "desc": "Description",
+                "link": 2
+            },
+            {
+                "pointX": -868.1160932076283,
+                "pointY": -79.86822474824804,
+                "pointZ": 223.59642231359746,
+                "id": 2,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-2",
+                "title": "Title-2",
+                "desc": "Description",
+                "link": null
+            },
+            {
+                "pointX": -10.58544606983397,
+                "pointY": -224.40602851143393,
+                "pointZ": 871.5100139527524,
+                "id": 3,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-3",
+                "title": "Title-3",
+                "desc": "Description",
+                "link": null
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "name": "Image-2",
+        "image": "./images/room/living-room.jpg",
+        "annotation": [
+            {
+                "pointX": 742.4205557256921,
+                "pointY": -295.1988770072412,
+                "pointZ": 414.32978742207234,
+                "id": 1,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-1",
+                "title": "Title-1",
+                "desc": "Description",
+                "link": null
+            },
+            {
+                "pointX": -389.99671252814346,
+                "pointY": -50.61176903274191,
+                "pointZ": 809.5312502041103,
+                "id": 2,
+                "icon": "./images/icon/icon2.png",
+                "label": "Cafe Area",
+                "title": "Cafe Area",
+                "desc": "Description",
+                "link": 3
+            },
+            {
+                "pointX": -596.4357466875114,
+                "pointY": -158.21798322588916,
+                "pointZ": 655.1574573529354,
+                "id": 3,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-3",
+                "title": "Title-3",
+                "desc": "Description",
+                "link": null
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Image-3",
+        "image": "./images/room/pantry.jpg",
+        "annotation": [
+            {
+                "pointX": -469.3960116481102,
+                "pointY": 91.05643364209345,
+                "pointZ": -762.4801290661447,
+                "id": 1,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-1",
+                "title": "Title-1",
+                "desc": "Description",
+                "link": null
+            },
+            {
+                "pointX": 887.6274283311187,
+                "pointY": -2.0384217359564176,
+                "pointZ": -148.7051355887465,
+                "id": 2,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-2",
+                "title": "Title-2",
+                "desc": "Description",
+                "link": null
+            },
+            {
+                "pointX": 309.23218459405,
+                "pointY": -123.32907790101358,
+                "pointZ": 836.1610089930746,
+                "id": 3,
+                "icon": "./images/icon/icon2.png",
+                "label": "Kitchen",
+                "title": "Kitchen",
+                "desc": "Description",
+                "link": 1
+            },
+            {
+                "pointX": -833.4085594801372,
+                "pointY": -57.894965956194326,
+                "pointZ": 334.7807935326365,
+                "id": 4,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-4",
+                "title": "Title-4",
+                "desc": "Description",
+                "link": null
+            }
+        ]
+    }
+];

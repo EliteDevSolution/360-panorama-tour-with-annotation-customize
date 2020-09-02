@@ -1,0 +1,168 @@
+body, html{
+	padding: 0px;
+    margin: 0px;
+    overflow-x: hidden;
+    height: 100vh;
+    width: 100vw;
+    font-family: sans-serif;
+    background-image: url(../images/crew--3can7MahTA-unsplash.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
+}
+/* start home page content */
+.homepage {
+    position: absolute;
+    width: 320px;
+    left: calc(50vw - 160px);
+    top: 20vh;
+    text-align: center;
+}
+.home-title {
+    font-size: 35px;
+    color: #fff;
+}
+.home-description {
+    font-size: 14px;
+    color: #fff;
+}
+
+.loading{
+	position: fixed;
+	left: 0px;
+	top:0px;
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	color: #fff;
+	z-index: 10001;
+	display: none;
+}
+.loading-container {
+    position: relative;
+}
+.loading-content{
+	position: absolute;
+	width: 300px;
+	height: 40px;
+	left: calc(50vw - 150px);
+	top:calc(50vh - 20px);
+	text-align: center;
+}
+
+canvas{
+	display: block;
+	z-index: 9999;
+}
+
+div#container {
+    display: block;
+}
+
+div#startButton {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px;
+    height: 20px;
+    top: calc(50vh - 25px);
+	background-color: #00dcb9;
+    color: #2b2b2b;
+    font-family: sans-serif;
+    position: relative;
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+div#startButton:hover{
+	background-color: #00dcb9;
+    color: #fff;	
+}
+/* end of home page content */
+
+/* panorama styling */
+.gyrobutton{
+	width: 50px;
+	height: 66px;
+	display: none;
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 10000;
+}
+.popup{
+	position: absolute;
+    width: 300px;
+    height: 300px;
+    background-color: #ffffff90;
+    border-radius: 10px;
+    top: 0;
+    left: 0px;
+    z-index: 10000;
+}
+.hoverlabel{
+	position: absolute;
+	top:0px;
+	left: -500px;
+	text-align: center;
+    padding: 10px;
+    background-color: #000;
+    margin-top: -80px;
+    width: 120px;
+    margin-left: -70px;
+    color: #fff;
+    border-radius: 10px;
+}
+.annotation {
+    position: absolute;
+    z-index: 1;
+    margin-left: 15px;
+    margin-top: 15px;
+    padding: 1em;
+    width: 200px;
+    margin-left: -100px;
+    margin-top: 50px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: .5em;
+    font-size: 12px;
+    line-height: 1.2;
+    transition: opacity .5s;
+    top:0px;
+	left: 0px;
+	opacity: 0;
+}
+    
+.annotation-body img {
+    width: 100%;
+}
+.annotation-title {
+    font-size: 20px;
+    margin-bottom: 8px;
+    display: block;
+}
+.annotation-body {
+    font-size: 14px;
+    display: block;
+}
+.close-btn {
+    position: absolute;
+    right: 0px;
+    padding: 10px;
+    top: 0px;
+    cursor: pointer;
+}
+.close-btn:hover{
+	color: #f00;
+}
+/* end of panorama styling */

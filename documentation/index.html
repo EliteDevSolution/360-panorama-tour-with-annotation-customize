@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<head lang="en">
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<title>360 Panorama Tour with Annotation</title>
+	<!-- Framework CSS -->
+	<link rel="stylesheet" href="assets/blueprint-css/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="assets/blueprint-css/print.css" type="text/css" media="print">
+	<!--[if lt IE 8]><link rel="stylesheet" href="assets/blueprint-css/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<link rel="stylesheet" href="assets/blueprint-css/plugins/fancy-type/screen.css" type="text/css" media="screen, projection">
+	<style type="text/css" media="screen">
+		p, table, hr, .box { margin-bottom:25px; }
+		.box p { margin-bottom:10px; }
+		pre{
+			font-size: 12px;
+		}
+		li p {
+		    margin-bottom: 0px;
+		}
+		li img {
+		    width: 100%;
+		    display: block;
+		    margin-left: auto;
+		    margin-right: auto;
+		    max-width: 640px;
+		    margin-bottom: 30px;
+		}
+	</style>
+</head>
+
+
+<body>
+	<div class="container">
+	
+		<h3 class="center alt">&ldquo;360 Panorama Tour with Annotation&rdquo; Documentation by &ldquo;Egi Purwana&rdquo; v1.0</h3>
+		
+		<hr>
+		
+		<h1 class="center">&ldquo;360 Panorama Tour with Annotation&rdquo;</h1>
+		
+		<div class="borderTop">
+			<div class="span-6 colborder info prepend-1">
+				<p class="prepend-top">
+					<strong>
+					Created: 04/11/2020<br>
+					Updated: 05/03/2020<br>
+					By: Egi Purwana<br>
+					Email: <a href="mailto:info@egipurwana.com">info@egipurwana.com</a>
+					</strong>
+				</p>
+			</div><!-- end div .span-6 -->		
+	
+			<div class="span-12 last">
+				<p class="prepend-top append-0">Thank you for purchasing this HTML5 Template. If you have any questions that are beyond the scope of this help file, please feel free to email via my user page contact form <a href="http://themeforest.net/user/egipurwana">here</a>. Thanks so much!</p>
+			</div>
+		</div><!-- end div .borderTop -->
+		
+		<hr>
+		
+		<h2 id="toc" class="alt">Table of Contents</h2>
+		<ol class="alpha">
+			<li><a href="#requirements">Requirements</a></li>
+			<li><a href="#gettingstarted">Getting Started</a></li>
+			<li><a href="#php-generator">PHP Generator</a></li>			
+			<li><a href="#configfile">Config File</a></li>
+		</ol>
+		
+		<hr>
+		
+		<h3 id="requirements"><strong>A) Requirements</strong> - <a href="#toc">top</a></h3>
+		<p>This HTML5 template is a built by HTML5, CSS3, Javascript, and Jquery. This HTML5 template is running WebGL.</p>
+		<p>This HTML5 depedencies is :
+		<ul>
+			<li>Three.js</li>
+			<li>Three.js Orbit Control</li>
+			<li>Three.js Device Orientation</li>
+			<li>jQuery</li>
+		</ul>
+		</p>
+		<p>This HTML5 template required webserver to run. Use XAMPP for windows or MAMP for osx or any other similar software for running local webserver, in your local development.</p>
+				
+		<hr>
+		
+		<h3 id="gettingstarted"><strong>B) Getting Started</strong> - <a href="#toc">top</a></h3>
+
+		<p>There are two other folders in this folder besides the documentation, which are called Generator and Viewer. I'm using one JSON file in this HTML5 Template. So you just need that file to edit rooms and annotations that you want to show. The point.json file is in the both Generator and Viewer folders.</p>
+		
+		<h3>Step by step</h3>
+		<ol>
+			<li>Copy 360 Panorama Tour Folder to your <strong><i>htdocs directory</i></strong></li>
+			<li>Go to <strong><i>localhost/360 Panorama Tour/generator/</i></strong></li>
+			<li>Copy the 360 images to <strong><i>/generator/images/room</i></strong> and <strong><i>/viewer/images/room</i></strong> folder</li>
+			<li>Copy the annotation icon images to <strong><i>/generator/images/icon</i></strong> and <strong><i>/viewer/images/icon</i></strong> folder</li>
+			<li>Open <strong><i>/generator/point.json</i></strong> in text editor and edit the images and annotation object in the file</li>
+			<li>Open in browser <strong><i>localhost/360 Panorama Tour/generator/index.html</i></strong></li>
+			<li>Add the annotation with <strong>left click + shift</strong> and <strong>left click + control</strong> to remove the annotation</li>
+			<li>You can change the name of images, titles, descriptions in the textarea in the bottom of the page</li>
+			<li>After that you can copy the text in textarea and paste it to <strong>point.json</strong> file in <strong><i>localhost/360 Panorama Tour/viewer/</i></strong> folder</li>
+		</ol>				
+
+		<hr>
+		
+		<h3 id="php-generator"><strong>B) PHP Generator</strong> - <a href="#toc">top</a></h3>
+
+		<p>In this folder, you can automatically generate <strong>point.json</strong> and <strong>/images</strong> folder. I'm using PHP for moving your image to images folder. So you can do add room/image, add annotation, and after all you just click <strong>generate button</strong> on the right bottom corner, and then the <strong>point.json</strong> file is ready automatically downloaded, after that you can copy that <strong>point.json</strong> file to viewer folder, and copy <strong>/php-generator/images/room</strong> folder to <strong>viewer/images/room</strong> folder.</p>
+		
+		<h3>Step by step</h3>
+		<ol>
+			<li><p>Add the images</p><img src="assets/images/image-1.jpg"/></li>
+			<li><p>Add the annotations</p><img src="assets/images/image-2.jpg"/></li>
+			<li><p>Edit the annotations content or annotation link to other image</p><img src="assets/images/image-3.jpg"/></li>
+		</ol>				
+
+		<hr>
+				
+		<h3 id="configfile"><strong>C) Config File</strong> - <a href="#toc">top</a></h3>
+		
+		<p>You just need change point.json file to edit rooms and annotations</p>
+		
+<h3>point.json</h3>
+<pre>
+var supportgyro = true; //if true gyroscope mode in mobile with https protocols will enabled
+var DATA = [
+{
+	"id":1, <strong>//this id is identifier of room / image</strong>
+	"name":"Kitchen", <strong>//this name is name of room / image</strong>
+	"image":"./images/room/kitchen.jpg", <strong>//this url of image of room</strong>
+	"annotation":[ <strong>//this annotation used by system to create annotations in the room</strong>
+		 {
+			pointX : -12.093831948363794, <strong>//Position 3D in X dimension, generated by generator</strong>
+			pointY : -224.28607211178354, <strong>//Position 3D in X dimension, generated by generator</strong>
+			pointZ : 871.5212766538773, <strong>//Position 3D in X dimension, generated by generator</strong>
+			id : 1, <strong>//this id is identifier of annotation in the room</strong>
+			icon : "./images/icon/icon1.png", <strong>//this url of icon of annotation</strong>
+			title : "Garage", <strong>//this is used for title and label for annotation</strong>
+			desc : "Description", <strong>//this description text for annotation</strong>
+			link : 2 <strong>//this is id which linked to another image / room or you can use null if this annotation is description</strong>
+		},
+		{
+			pointX : -868.6642812767091, <strong>//Position 3D in X dimension, generated by generator</strong>
+			pointY : -98.12945468182242, <strong>//Position 3D in X dimension, generated by generator</strong>
+			pointZ : -213.99255963043308, <strong>//Position 3D in X dimension, generated by generator</strong>
+			id : 2, <strong>//this id is identifier of annotation in the room</strong>
+			icon : "./images/icon/icon1.png", <strong>//this url of icon of annotation</strong>
+			title : "Drawer", <strong>//this is used for title and label for annotation</strong>
+			desc : "Description", <strong>//this description text for annotation</strong>
+			link : null <strong>//this is id which linked to another image / room or you can use null if this annotation is description</strong>
+		}			
+	]
+}
+</pre>
+		
+		<p>You can add another room with the same structure and content as much as you want.</p>
+		
+		<hr>
+		
+		<p>Home Page image Background credits to <a href="https://unsplash.com/@crew" target="_blank">Unsplash /@crew</a></p>
+		<p>All 360 Photos credits to <a href="https://pixexid.com" target="_blank">pixexid.com</a></p>
+		
+		<hr>
+		
+		<p class="append-bottom alt large"><strong>Egi Purwana</strong></p>
+		<p><a href="#toc">Go To Table of Contents</a></p>
+		
+		<hr class="space">
+	</div><!-- end div .container -->
+</body>
+</html>

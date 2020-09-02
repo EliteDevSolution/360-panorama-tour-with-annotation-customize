@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>360 Panorama Tour - Generator</title>
+	<meta charset="utf-8">
+	
+	<meta name="description" content="360 Panorama Tour">
+    <meta itemprop="description" content="360 Panorama Tour">
+    <meta itemprop="name" content="360 Panorama Tour">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta id="theme-color" name="theme-color" content="#ffffff">
+    
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+	<div class="loading">
+		<div class="loading-container">
+			<div class="loading-content">Loading...</div>
+		</div>
+	</div>
+
+	<div id="container"></div><div id="container-data" class="data-panel">
+		<div class="btn-hide-panel"></div>
+		<textarea id="log"></textarea>	
+		<div class="btn btn-download-data">Generate</div>
+	</div>
+	
+	<div id="container-image">
+		<div id="drop-area">
+			<form class="my-form">
+				<input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+				<label class="button" for="fileElem"></label>
+			</form>
+			<progress id="progress-bar" max=100 value=0></progress>
+			<div id="gallery" /></div>
+		</div>
+	</div>
+
+	<div class="btnstart" id="startButton">
+		Drop the Images Below
+	</div>
+	
+	<div class="annotation">
+		<div class="close-btn">X</div>
+		<div class="annotation-title" contenteditable="true" id="annotation-title">Title</div>
+		<div class="annotation-body" contenteditable="true" id="annotation-body">Description</div>
+	</div>
+	
+	<script src="./lib/jquery-3.4.1.min.js"></script>
+	<script src="./lib/jquery-ui.min.js"></script>
+	<script src="./lib/Blob.js"></script>
+	<script src="./lib/FileSaver.min.js"></script>	
+	<script src="./point.json"></script>
+
+	<script type="module">		
+		import * as THREE from './lib/three.module.js';
+		import { DeviceOrientationControls } from './lib/DeviceOrientationControls.js';
+		import { OrbitControls } from './lib/OrbitControls.js';
+		
+		window.THREE = THREE;
+		window.DeviceOrientationControls = DeviceOrientationControls;
+		window.OrbitControls = OrbitControls;
+		
+		$(document).ready(function(){			
+			var DATA = [];
+			var element = $('#container');
+			const annotation = $(".annotation");
+			var canvas;
+			var camera, scene, renderer, controls, onPointerDownPointerX, onPointerDownPointerY, raycaster, hotcaster,spriteMaterial;
+			var hotstop;
+			var globe;
+			var tooltipPosition
+			var added = false;
+			var removed = false;
+			var markers = [], markersCounter = 1;
+			var intersects = [];
+			var mouse, fov = 75;
+			var idx = 0;
+			var currentidx = 1;
+			
+			var jqxhr = $.get( "uploader.php?param=image", function(e) {
+				let data = JSON.parse(e);
+				let strfirst = '';				
+				if(data !== null){
+					for(let i = 0;i< data.length;i++){
+						idx = i + 1;
+						$('#gallery').append('<div class="image-gallery-container" data-idx="'+idx+'" ><span class="image-gallery-idx gallery-idx-'+idx+'" data-idx="'+idx+'">'+idx+'</span><span class="btn-remove-image remove-idx-'+idx+'" data-idx="'+idx+'" data-filename="'+data[i]+'">X</span><img class="gallery-item gallery-item-'+idx+'" data-idx="'+idx+'" src="./images/room/'+data[i]+'"/></div>');
+						strfirst += '{\n'+
+						    '     "id":'+idx+',\n'+
+						    '     "name":"Image-'+idx+'",\n'+
+						    '     "image":"./images/room/'+data[i]+'",\n'+
+						    '     "annotation":[]\n'+
+						'},\n';
+						
+						DATA.push({"id":idx,
+						    "name":"Image-"+idx,
+						    "image":"./images/room/"+data[i],
+						    "annotation":[]
+						})
+					}
+					$('#log').val('var DATA = [\n'+strfirst+'];');
+					
+					$('.gallery-item-1').addClass('selected');
+
+					$('.gallery-item').off('click');
+					$('.gallery-item').on('click',changeImage);
+					
+					$('.btn-remove-image').off('click');
+					$('.btn-remove-image').on('click',removeImage);
+					
+					$('#startButton').hide();			
+					init();
+					animate();
+				}else{
+					
+				}
+			})
+			.fail(function() {
+				alert( "error" );
+			});
+			
+			annotation.ishide = true;
+			$('.close-btn').on('click',function(){
+				annotation.ishide = true;
+				annotation.css('opacity','0')
+				annotation.css('left','-500px');
+			})
+			
+			var progressLoading = 0;
+			var assetLoader = new THREE.LoadingManager();
+			assetLoader.onStart = function ( url, itemsLoaded, itemsTotal ) {
+				progressLoading = 0;
+				$('.loading').show();
+			};
+			assetLoader.onLoad = function ( ) {
+				$('.loading').hide();
+			};
+			assetLoader.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+				progressLoading = Math.floor((itemsLoaded / itemsTotal) * 100);
+				$('.loading-content').html("Loading...<br>"+progressLoading+"%");
+			};
+			assetLoader.onError = function ( url ) {
+				$('.loading-content').html("There is something wrong<br>Please restart the browser");
+			};
+  	
+			function init() {
+				raycaster = new THREE.Raycaster();
+				hotcaster = new THREE.Raycaster();
+				mouse = new THREE.Vector2();
+				
+				camera = new THREE.PerspectiveCamera( fov, window.innerWidth / window.innerHeight, 1, 1100 );				
+				scene = new THREE.Scene();
+				
+				spriteMaterial = new THREE.SpriteMaterial({
+					map: new THREE.TextureLoader(assetLoader).load(
+						"./images/icon/icon1.png"
+					)
+				});
+				
+				var geometry = new THREE.SphereBufferGeometry( 1000, 60, 40 );
+				geometry.scale( - 1, 1, 1 );
+				
+				var material = new THREE.MeshBasicMaterial( {
+					map: new THREE.TextureLoader(assetLoader).load( DATA[0].image )
+				});
+				
+				globe = new THREE.Mesh( geometry, material );
+				globe.name = DATA[0].name;
+				scene.add( globe );
+			
+				for(var j = 0;j<DATA[0].annotation.length;j++){
+					var map = new THREE.TextureLoader().load(
+						DATA[0].annotation[j].icon
+					)
+											
+					var arrowMaterial = new THREE.SpriteMaterial({map: map});
+					var marker = new THREE.Sprite(arrowMaterial);
+					marker.scale.set(40,40,40);
+					
+					marker.position.set(DATA[0].annotation[j].pointX,DATA[0].annotation[j].pointY,DATA[0].annotation[j].pointZ);
+					marker.name = 'marker';
+					marker.idannotation = j;
+					marker.title = DATA[0].annotation[j].title;
+					marker.arrayid = markers.length;
+					marker.link = DATA[0].annotation[j].link;
+					scene.add( marker );
+					markers.push(marker)			
+				}
+				markersCounter = markers.length;
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				element.append( renderer.domElement );
+				canvas = renderer.domElement;
+				
+				document.addEventListener('keydown', keyDown, false);
+				document.addEventListener('keyup', keyUp, false);				
+				
+				element.on('mousemove',onDocumentMouseMove);
+				element.on('mousedown',onDocumentMouseDown);
+				element.on('touchstart',onDocumentMouseDown);
+				window.addEventListener( 'resize', onWindowResize, false );
+				
+				//orbit control
+				camera.position.z = 0.0001;
+				controls = new OrbitControls( camera, renderer.domElement );
+				controls.target.set(0, 0, 0);
+				controls.enableZoom = false;
+				controls.enablePan = false;
+				controls.enableDamping = true;
+				controls.rotateSpeed = -0.75;
+			}
+			
+			function animate() {
+				window.requestAnimationFrame( animate );
+				controls.update();
+				renderer.render(scene, camera);   				
+				updateScreenPosition();
+			}
+			
+			function updateScreenPosition() {	
+				if(hotstop && annotation.ishide == false){					
+					camera.updateMatrix();
+					camera.updateMatrixWorld();
+
+					var frustum = new THREE.Frustum();
+					frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));  
+
+					if (frustum.containsPoint(hotstop.position)) {
+						tooltipPosition = hotstop.position.clone().project(camera);			        
+						tooltipPosition.x = (0.5 + tooltipPosition.x / 2) * (canvas.width / window.devicePixelRatio)//Math.round();
+						tooltipPosition.y = (0.5 - tooltipPosition.y / 2) * (canvas.height / window.devicePixelRatio)//Math.round();
+
+						annotation.css('opacity','1')
+						annotation.css('top',`${tooltipPosition.y}px`);
+						annotation.css('left',`${tooltipPosition.x}px`);					
+					}else{
+						annotation.css('opacity','0')
+						annotation.css('left','-500px');
+					}
+		        }
+			}
+			var panelshow = true;
+			$('.btn-hide-panel').on('click',function(){
+				if(panelshow == true){
+					$('.btn-hide-panel').addClass('hidden');
+					$('#container-data').css('right','-250px');
+					$('#container-image').css('width','calc(100% - 10px)');
+					panelshow = false;
+				}else{
+					$('.btn-hide-panel').removeClass('hidden');
+					$('#container-data').css('right','0px');
+					$('#container-image').css('width','calc(100% - 260px)');
+					panelshow = true;					
+				}
+			})
+			
+			$('.btn-download-data').on('click',function(){
+				let texttosave = $('#log').val();
+				var blob = new Blob([texttosave], {type: "text/plain;charset=utf-8"});
+				saveAs(blob, "point.json");
+			})
+			
+			function onDocumentMouseDown(event) {
+				if(event.pageX === undefined){
+					mouse.x = event.clientX / window.innerWidth * 2 - 1;
+					mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+				}else{
+					mouse.x = event.pageX / window.innerWidth * 2 - 1;
+					mouse.y = -(event.pageY / window.innerHeight) * 2 + 1;
+				}
+				
+				raycaster.setFromCamera(mouse, camera);		
+
+				if(added == true){
+					let idcurr = searchLink(DATA,currentidx);
+					let localmarkcount;
+					if(DATA[idcurr].annotation.length == 0){
+						localmarkcount = DATA[idcurr].annotation.length + 1;
+					}else{
+						localmarkcount = DATA[idcurr].annotation[DATA[idcurr].annotation.length - 1].id + 1;
+					}
+					
+					let marker = new THREE.Sprite(spriteMaterial);
+					marker.scale.set(20, 20, 10);
+					marker.arrayid = markersCounter;
+					marker.localid = localmarkcount;
+					marker.name = 'marker-new';
+					marker.title = "marker" + markersCounter;
+					raycaster.ray.at(900, marker.position);
+					
+					DATA[idcurr].annotation.push({
+						pointX : marker.position.x,
+						pointY : marker.position.y,
+						pointZ : marker.position.z,
+						id : localmarkcount,
+						icon : "./images/icon/icon1.png",
+						label : "Label-"+localmarkcount,
+						title : "Title-"+localmarkcount,
+						desc : "Description",
+						link : null
+					});
+					$('#log').val('');
+					$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');
+					
+					scene.add(marker);
+					markers.push(marker);
+					markersCounter = markers.length;
+				}else if(added == false && removed == true){
+					intersects = raycaster.intersectObjects(markers);
+					if (intersects.length > 0){
+						let obj = intersects[0];
+						let uv = obj.uv;
+						if (Math.min(uv.x, uv.y) >= 0) { 
+							let idcurr = searchLink(DATA,currentidx);
+							let localid = searchLink(DATA[idcurr].annotation,obj.object.localid);
+							
+							scene.remove(obj.object);
+							removeArray(markers,obj.object.localid);
+							
+							DATA[idcurr].annotation.splice(localid, 1);
+							DATA[idcurr].annotation = DATA[idcurr].annotation;
+							
+							$('#log').val('');
+							$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');
+						}
+					}
+				}else{
+					intersects = raycaster.intersectObjects(markers);
+					if (intersects.length > 0){
+						let obj = intersects[0];
+						let uv = obj.uv;
+						if (Math.min(uv.x, uv.y) >= 0) { 
+							if(obj.object.link == null){
+								hotstop = obj.object;
+								annotation.ishide = false;
+								
+								let idcurr = searchLink(DATA,currentidx);
+								let localid = searchLink(DATA[idcurr].annotation,obj.object.localid);
+								
+								console.log(obj.object.localid);
+								
+								console.log(DATA[idcurr].annotation);
+								console.log(idcurr);
+								console.log(localid);
+								console.log(DATA[idcurr].annotation[localid]);
+								
+								$('.annotation .annotation-title').html(DATA[idcurr].annotation[localid].title);
+								$('.annotation .annotation-body').html(DATA[idcurr].annotation[localid].desc);
+
+								$('.annotation-title').off('input');
+								$('.annotation-title').on('input',function(){	
+									DATA[idcurr].annotation[localid].title = $('.annotation-title').html();
+
+									$('#log').val('');
+									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
+								})	
+								
+								$('.annotation-body').off('input');
+								$('.annotation-body').on('input',function(){	
+									DATA[idcurr].annotation[localid].title = $('.annotation-body').html();
+
+									$('#log').val('');
+									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
+								})						
+								
+							}else{
+								changeRoom(obj.object.link);
+							}
+						}
+					}
+				}
+				
+			    event.preventDefault();
+			    element.off('mouseup');
+			    element.on('mouseup',onDocumentMouseUp);
+			}
+			
+			function changeImage(){
+				$('.gallery-item').removeClass('selected');
+				$(this).addClass('selected');
+				
+				let id = $(this).data('idx');				
+				changeRoom(id);
+			}
+			
+			function removeImage(){
+				var jqxhr = $.get( "uploader.php?param=remove&filename="+$(this).data('filename'), function(e) {
+					console.log(e);
+				}).fail(function() {
+					alert( "error" );
+				});
+				
+				$(this).parent().remove();
+				let id = $(this).data('idx');
+				var idx = searchLink(DATA,id);
+				DATA.splice(idx, 1);
+				$('#log').val('');
+				$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');
+			}
+			
+			function changeRoom(id){
+				currentidx = id;
+				var id = searchLink(DATA,id);				
+				var material = new THREE.MeshBasicMaterial( {
+					map: new THREE.TextureLoader(assetLoader).load( DATA[id].image )
+				});		
+				
+				globe.material = material;				
+				markers.forEach(function(marker){
+					scene.remove(marker);
+					markers = [];
+				})
+				
+				hotstop = null;
+				
+				annotation.ishide = true;
+				annotation.css('opacity','0')
+				annotation.css('left','-500px');
+
+				for(var j = 0;j<DATA[id].annotation.length;j++){
+					var map = new THREE.TextureLoader().load(
+						DATA[id].annotation[j].icon
+					)
+																
+					var arrowMaterial = new THREE.SpriteMaterial({map: map});
+					var helper = new THREE.Sprite(arrowMaterial);
+					helper.scale.set(40,40,40);
+					
+					helper.position.set(DATA[id].annotation[j].pointX,DATA[id].annotation[j].pointY,DATA[id].annotation[j].pointZ);
+					helper.name = 'marker';
+					helper.idannotation = j;
+					helper.title = DATA[id].annotation[j].title;
+					helper.localid = DATA[id].annotation[j].id;
+					helper.arrayid = markers.length;
+					helper.link = DATA[id].annotation[j].link;
+					scene.add( helper );
+					markers.push(helper)			
+				}
+			}
+			
+			function searchLink(data,val){
+				for(var i = 0; i < data.length; i++) {
+				    if(data[i].id == val) {
+					    return i;
+				        break;
+				    }
+				}
+			}
+			
+			function keyDown(event){
+				const keyName = event.key;				
+				if(keyName == "Shift"){
+					added = true;
+				}
+				
+				if(keyName == "Control"){
+					removed = true;
+				}
+			}
+			
+			function keyUp(event){
+				const keyName = event.key;				
+				if(keyName == "Shift"){
+					added = false;
+				}
+				if(keyName == "Control"){
+					removed = false;
+				}
+			}
+			
+			function onDocumentMouseMove(event) {				
+				mouse.x = event.clientX / window.innerWidth * 2 - 1;
+				mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+				raycaster.setFromCamera(mouse, camera);	
+				
+				if(markers){
+					markers.forEach(function(hotspot){
+						hotspot.scale.set(40,40,40);
+					});				
+					intersects = raycaster.intersectObjects(markers);
+					if (intersects.length > 0){
+						let obj = intersects[0];
+						let uv = obj.uv;
+						if (Math.min(uv.x, uv.y) >= 0) {
+							obj.object.scale.set(60,60,60);
+						}
+					}
+				}
+			}
+			
+			function removeArray(data,value){
+				for(var i = 0; i < data.length; i++) {
+				    if(data[i].localid == value) {
+				        data.splice(i, 1);
+				        break;
+				    }
+				}
+			}			
+			
+			function onDocumentMouseUp(event) {
+			    element.off('mouseup');
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+			
+			// ************************ Drag and drop ***************** //
+			let uploadProgress = [];
+			let progressBar = document.getElementById('progress-bar');
+			let dropArea = document.getElementById("drop-area");
+			
+			;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+			  dropArea.addEventListener(eventName, preventDefaults, false)   
+			  document.body.addEventListener(eventName, preventDefaults, false)
+			})
+			;['dragenter', 'dragover'].forEach(eventName => {
+			  dropArea.addEventListener(eventName, highlight, false)
+			})
+			;['dragleave', 'drop'].forEach(eventName => {
+			  dropArea.addEventListener(eventName, unhighlight, false)
+			})
+			
+			dropArea.addEventListener('drop', handleDrop, false);
+			
+			window.handleFiles = function(files) {
+				files = [...files]
+				initializeProgress(files.length)
+				files.forEach(uploadFile)
+			}
+			function preventDefaults (e) {
+				e.preventDefault()
+				e.stopPropagation()
+			}			
+			function highlight(e) {
+				dropArea.classList.add('highlight')
+			}			
+			function unhighlight(e) {
+				dropArea.classList.remove('active')
+			}			
+			function handleDrop(e) {
+				var dt = e.dataTransfer
+				var files = dt.files
+				
+				handleFiles(files)
+			}
+			function initializeProgress(numFiles) {
+				progressBar.value = 0
+				uploadProgress = []
+				
+				for(let i = numFiles; i > 0; i--) {
+					uploadProgress.push(0)
+				}
+			}
+			function updateProgress(fileNumber, percent) {
+				uploadProgress[fileNumber] = percent
+				let total = uploadProgress.reduce((tot, curr) => tot + curr, 0) / uploadProgress.length
+				console.debug('update', fileNumber, percent, total)
+				progressBar.value = total
+			}
+			function uploadFile(file, i) {
+				let first = false;
+				var url = 'uploader.php?param=upload'
+				var xhr = new XMLHttpRequest()
+				var formData = new FormData()
+				xhr.open('POST', url, true)
+				xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+				
+				xhr.upload.addEventListener("progress", function(e) {
+					updateProgress(i, (e.loaded * 100.0 / e.total) || 100)
+				})
+				
+				xhr.addEventListener('readystatechange', function(e) {
+					if (xhr.readyState == 4 && xhr.status == 200) {
+						updateProgress(i, 100) // <- Add this
+					}else if(xhr.readyState == 2 && xhr.status == 200){
+						if(idx == 0){
+							first = true;
+						}	
+						
+						idx += 1;
+						DATA.push({"id":idx,
+							    "name":"Image-"+idx,
+							    "image":"./images/room/"+file.name,
+							    "annotation":[]
+							});						
+						
+						$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');
+						
+						$('#gallery').append('<div class="image-gallery-container" data-idx="'+idx+'"><span class="image-gallery-idx gallery-idx-'+idx+'" data-idx="'+idx+'">'+idx+'</span><span class="btn-remove-image remove-idx-'+idx+'" data-idx="'+idx+'" data-filename="'+file.name+'">X</span><img class="gallery-item gallery-item-'+idx+'" data-idx="'+idx+'" src="./images/room/'+file.name+'"/></div>');
+
+						$('.gallery-item').off('click');
+						$('.gallery-item').on('click',changeImage);
+						
+						$('.btn-remove-image').off('click');
+						$('.btn-remove-image').on('click',removeImage);
+
+						if(first == true){
+							$('.gallery-item-1').addClass('selected');
+							$('#startButton').hide();			
+							init();
+							animate();
+						}
+					}
+					else if (xhr.readyState == 4 && xhr.status != 200) {
+						// Error. Inform the user
+					}
+				})
+					
+				formData.append('upload_preset', 'ujpu6gyk')
+				formData.append('file', file)
+				xhr.send(formData)
+			}
+			
+		})
+	</script>
+</body>
+</html>

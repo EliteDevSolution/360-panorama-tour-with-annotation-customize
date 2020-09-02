@@ -1,0 +1,230 @@
+var supportgyro = true;
+var DATA = [
+	{
+      "id":1,
+      "name":"Kitchen",
+      "image":"./images/room/kitchen.jpg",
+      "annotation":[
+         {
+			pointX : -12.093831948363794,
+			pointY : -224.28607211178354,
+			pointZ : 871.5212766538773,
+			id : 1,
+			icon : "./images/icon/icon1.png",
+			title : "Garage",
+			desc : "Description",
+			link : 2
+		},
+		{
+			pointX : -868.6642812767091,
+			pointY : -98.12945468182242,
+			pointZ : -213.99255963043308,
+			id : 2,
+			icon : "./images/icon/icon1.png",
+			title : "Living Room",
+			desc : "Description",
+			link : 3
+		},
+		{
+			pointX : -767.6832003301873,
+			pointY : -57.68056869435148,
+			pointZ : -466.1923303969533,
+			id : 3,
+			icon : "./images/icon/icon1.png",
+			title : "Kitchen 2",
+			desc : "Description",
+			link : 4
+		},
+		{
+			pointX : 690.7046815210134,
+			pointY : -79.74352926606709,
+			pointZ : 571.4611407098258,
+			id : 4,
+			icon : "./images/icon/icon2.png",
+			title : "City View",
+			desc : "This city view is very beautiful when afternoon come",
+			link : null
+		},
+
+      ]
+   },
+   {
+      "id":2,
+      "name":"Garage",
+      "image":"./images/room/garage.jpg",
+      "annotation":[
+	      {
+			pointX : -759.4592929776089,
+			pointY : -187.38190628318773,
+			pointZ : -445.09485070846347,
+			id : 1,
+			icon : "./images/icon/icon1.png",
+			title : "Kitchen",
+			desc : "Description",
+			link : 1
+		},
+		{
+			pointX : -873.4285462216382,
+			pointY : -16.309559324217947,
+			pointZ : 216.4634393659097,
+			id : 2,
+			icon : "./images/icon/icon2.png",
+			title : "Toolset",
+			desc : "Description",
+			link : null
+		},
+		{
+			pointX : -527.5141743622058,
+			pointY : -255.0924594922153,
+			pointZ : 683.1225799804432,
+			id : 3,
+			icon : "./images/icon/icon2.png",
+			title : "Komputer",
+			desc : "Description",
+			link : null
+		},
+      ]
+   },
+   {
+      "id":3,
+      "name":"Living Room",
+      "image":"./images/room/living-room.jpg",
+      "annotation":[
+	      {
+			pointX : -541.0401740171395,
+			pointY : -113.75803995040499,
+			pointZ : 710.1651019842724,
+			id : 1,
+			icon : "./images/icon/icon1.png",
+			title : "Kitchen",
+			desc : "Description",
+			link : 1
+		},
+		{
+			pointX : 414.5298421293621,
+			pointY : -154.44559095218253,
+			pointZ : -783.7802003600162,
+			id : 2,
+			icon : "./images/icon/icon1.png",
+			title : "Title-3",
+			desc : "Description",
+			link : 5
+		},
+		{
+			pointX : 814.086442988444,
+			pointY : -346.2548071185133,
+			pointZ : 165.44094765242806,
+			id : 3,
+			icon : "./images/icon/icon2.png",
+			title : "Couch",
+			desc : "Description",
+			link : null
+		},
+      ]
+   },
+   {
+      "id":4,
+      "name":"Kitchen 2",
+      "image":"./images/room/kitchen-2.jpg",
+      "annotation":[
+	    {
+			pointX : 685.0090998261338,
+			pointY : -85.62039880669761,
+			pointZ : 577.4352793629637,
+			id : 1,
+			icon : "./images/icon/icon1.png",
+			title : "Garage",
+			desc : "Description",
+			link : 1
+		},
+		{
+			pointX : 841.0730291683552,
+			pointY : -51.39367383536624,
+			pointZ : 316.1561080469754,
+			id : 2,
+			icon : "./images/icon/icon2.png",
+			title : "City View",
+			desc : "Description",
+			link : null
+		},
+		{
+			pointX : -768.7193658912657,
+			pointY : -357.014096915174,
+			pointZ : 302.6735822699361,
+			id : 3,
+			icon : "./images/icon/icon1.png",
+			title : "Living Room",
+			desc : "Description",
+			link : 3
+		},
+      ]
+   },
+   {
+      "id":5,
+      "name":"Pantry",
+      "image":"./images/room/pantry.jpg",
+      "annotation":[
+	    {
+			pointX : -461.28022667072196,
+			pointY : -143.87225817747418,
+			pointZ : -759.2899050176896,
+			id : 1,
+			icon : "./images/icon/icon1.png",
+			title : "Garage",
+			desc : "Description",
+			link : 2
+		},
+		{
+			pointX : -836.6431010401822,
+			pointY : -64.0257889444476,
+			pointZ : 325.4671140135364,
+			id : 2,
+			icon : "./images/icon/icon1.png",
+			title : "Kitchen 2",
+			desc : "Description",
+			link : 4
+		},
+		{
+			pointX : -708.0074296421388,
+			pointY : -39.39745874630857,
+			pointZ : 554.2320337832236,
+			id : 3,
+			icon : "./images/icon/icon1.png",
+			title : "Kitchen 1",
+			desc : "Description",
+			link : 1
+		},
+		{
+			pointX : 305.1215447884979,
+			pointY : -117.05760369676271,
+			pointZ : 838.5691347582633,
+			id : 4,
+			icon : "./images/icon/icon1.png",
+			title : "Living Room",
+			desc : "Description",
+			link : 3
+		},
+		{
+			pointX : -531.9421582833642,
+			pointY : -98.0266840342673,
+			pointZ : 719.3247784259937,
+			id : 5,
+			icon : "./images/icon/icon2.png",
+			title : "Wine Rack",
+			desc : "Description",
+			link : null
+		},
+		{
+			pointX : 885.5115974307488,
+			pointY : -26.491063851444583,
+			pointZ : -158.64197653215618,
+			id : 6,
+			icon : "./images/icon/icon2.png",
+			title : "Bar",
+			desc : "Description",
+			link : null
+		},
+
+      ]
+   }
+];
