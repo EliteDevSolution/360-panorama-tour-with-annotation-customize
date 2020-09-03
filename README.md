@@ -13,3 +13,4 @@ Built by HTML5, Javascript, CSS3.
 - Manual file is included in download file.
 
 - (New Feature) New generator tools for create annotations and generate file and folder
+
