@@ -11,6 +11,7 @@
     <meta id="theme-color" name="theme-color" content="#ffffff">
     
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="./css/select2.min.css">
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
 </head>
 <body>
@@ -45,10 +46,14 @@
 		<div class="close-btn">X</div>
 		<div class="annotation-title" contenteditable="true" id="annotation-title">Title</div>
 		<div class="annotation-body" contenteditable="true" id="annotation-body">Description</div>
+		<div class="annotation-select2" id="annotation-select2"></div>
+		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
+		<image class="annotation-img" src="./images/room/pantry.jpg" width="100%" />
 	</div>
 	
 	<script src="./lib/jquery-3.4.1.min.js"></script>
 	<script src="./lib/jquery-ui.min.js"></script>
+	<script src="./lib/select2.min.js"></script>	
 	<script src="./lib/Blob.js"></script>
 	<script src="./lib/FileSaver.min.js"></script>	
 	<script src="./point.json"></script>
@@ -78,6 +83,11 @@
 			var mouse, fov = 75;
 			var idx = 0;
 			var currentidx = 1;
+
+			$(".annotation-select2").select2( {
+				allowClear: true,
+				placeholder: "Select a Product",
+			});
 			
 			var jqxhr = $.get( "uploader.php?param=image", function(e) {
 				let data = JSON.parse(e);
