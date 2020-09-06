@@ -200,6 +200,12 @@ button
     border: none;
 }
 
+.annotation-button:disabled
+{
+    background-color: #868686;
+    border: none;
+}
+
 .annotation-cart-img
 {
     margin-left: 6px;
@@ -233,6 +239,13 @@ button
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     line-height: 28px;
     background-color: #2d2a27ed;
+    font-size: 15px;
+    color: white;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px;
+    background-color: #2d2a27ed;
     font-size:15px;
 }
 .annotation-select2
@@ -240,7 +253,6 @@ button
     width: 100%;
     display: block;
 }
-
 
 .close-btn {
     position: absolute;
@@ -364,3 +376,4 @@ div#gallery img {
 img.gallery-item.selected {
     border: 3px solid #f00 !important;
 }
+
