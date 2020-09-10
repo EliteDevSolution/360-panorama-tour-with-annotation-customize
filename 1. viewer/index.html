@@ -7,15 +7,21 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	
 	<meta name="description" content="360 Panorama Tour">
-    <meta itemprop="description" content="360 Panorama Tour">
-    <meta itemprop="name" content="360 Panorama Tour">
+	<meta itemprop="description" content="360 Panorama Tour">
+	<meta itemprop="name" content="360 Panorama Tour">
 
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta id="theme-color" name="theme-color" content="#ffffff">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta id="theme-color" name="theme-color" content="#ffffff">
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
+	
+	<!-- Vue -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-	
+	<div id="app" style="position: absolute;">
+		<cart-box></cart-box>
+	</div>
+	 
 	<!--Home Page Section -->
 	<div class="loading">
 		<div class="loading-container">
@@ -49,6 +55,25 @@
 		Title Label
 	</div>
 	
+	<!-- VueJS -->
+	<script>
+		Vue.component('CartBox', {
+		  template: "<div><button>TEST</button></div>",
+		  methods: {
+	 
+		  }
+		})
+		const vueApp = new Vue({
+		  el: '#app',
+		  data: {
+			 
+		  },
+		  methods: {
+	 
+		  }
+		})
+	</script>
+
 	<script src="./lib/jquery-3.4.1.min.js"></script>
 	<script src="./point.json"></script>
 	<script type="module">
