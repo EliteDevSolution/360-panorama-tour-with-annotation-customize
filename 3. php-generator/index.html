@@ -11,6 +11,7 @@
     <meta id="theme-color" name="theme-color" content="#ffffff">
     
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="./css/select2.min.css">
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
 </head>
 <body>
@@ -22,7 +23,7 @@
 
 	<div id="container"></div><div id="container-data" class="data-panel">
 		<div class="btn-hide-panel"></div>
-		<textarea id="log"></textarea>	
+		<textarea id="log"></textarea>
 		<div class="btn btn-download-data">Generate</div>
 	</div>
 	
@@ -45,10 +46,18 @@
 		<div class="close-btn">X</div>
 		<div class="annotation-title" contenteditable="true" id="annotation-title">Title</div>
 		<div class="annotation-body" contenteditable="true" id="annotation-body">Description</div>
+		<select class="annotation-select2" id="annotation-select2">
+			<option value="-1" thumbnail="./assets/default_product.jpg" price="">No Select Product</option>
+			<option value="1" thumbnail="./images/test/mac_pc.jpg" price="1125.35">Medidor de Stress Termico mod. TGD-400 conforme novare visao NHO 06</option>
+			<option value="2" thumbnail="./images/test/dell_pc.jpg" price="525.15">Medidor de pressao sonora modelo DEC-6000 com GPS filtro de banda de oitava.</option>
+		</select>
+		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
+		<image class="annotation-img" src="./assets/default_product.jpg" width="100%" />
 	</div>
 	
 	<script src="./lib/jquery-3.4.1.min.js"></script>
 	<script src="./lib/jquery-ui.min.js"></script>
+	<script src="./lib/select2.min.js"></script>	
 	<script src="./lib/Blob.js"></script>
 	<script src="./lib/FileSaver.min.js"></script>	
 	<script src="./point.json"></script>
@@ -78,6 +87,15 @@
 			var mouse, fov = 75;
 			var idx = 0;
 			var currentidx = 1;
+			var curProductId = -1;
+			var curProductImg = "";
+			var curPrice = "";
+			var curProductName = "";
+
+			$("#annotation-select2").select2( {
+				allowClear: true,
+				placeholder: "Select a Product",
+			});
 			
 			var jqxhr = $.get( "uploader.php?param=image", function(e) {
 				let data = JSON.parse(e);
@@ -184,6 +202,10 @@
 					marker.title = DATA[0].annotation[j].title;
 					marker.arrayid = markers.length;
 					marker.link = DATA[0].annotation[j].link;
+					marker.product_id = DATA[0].annotation[j].product_id;
+					marker.product_name = DATA[0].annotation[j].product_name;
+					marker.product_img = DATA[0].annotation[j].product_img;
+					marker.product_price = DATA[0].annotation[j].product_price;
 					scene.add( marker );
 					markers.push(marker)			
 				}
@@ -290,6 +312,7 @@
 					marker.name = 'marker-new';
 					marker.title = "marker" + markersCounter;
 					raycaster.ray.at(900, marker.position);
+					$("#annotation-select2").val(-1);
 					
 					DATA[idcurr].annotation.push({
 						pointX : marker.position.x,
@@ -300,6 +323,9 @@
 						label : "Label-"+localmarkcount,
 						title : "Title-"+localmarkcount,
 						desc : "Description",
+						product_id: "-1",
+						product_img: "./assets/default_product.jpg",
+						product_price:"",
 						link : null
 					});
 					$('#log').val('');
@@ -328,6 +354,7 @@
 						}
 					}
 				}else{
+					$('.annotation-button').attr('disabled', false);
 					intersects = raycaster.intersectObjects(markers);
 					if (intersects.length > 0){
 						let obj = intersects[0];
@@ -349,7 +376,13 @@
 								
 								$('.annotation .annotation-title').html(DATA[idcurr].annotation[localid].title);
 								$('.annotation .annotation-body').html(DATA[idcurr].annotation[localid].desc);
-
+								$('.annotation .annotation-img').attr('src', DATA[idcurr].annotation[localid].product_img);
+								$('#annotation-select2').val(DATA[idcurr].annotation[localid].product_id);
+								$('#select2-annotation-select2-container').text($('#annotation-select2 option:selected').text());
+								if(DATA[idcurr].annotation[localid].product_id == "-1")
+								{
+									$('.annotation-button').attr('disabled', true);
+								}
 								$('.annotation-title').off('input');
 								$('.annotation-title').on('input',function(){	
 									DATA[idcurr].annotation[localid].title = $('.annotation-title').html();
@@ -360,12 +393,37 @@
 								
 								$('.annotation-body').off('input');
 								$('.annotation-body').on('input',function(){	
-									DATA[idcurr].annotation[localid].title = $('.annotation-body').html();
+									DATA[idcurr].annotation[localid].desc = $('.annotation-body').html();
 
 									$('#log').val('');
 									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
-								})						
-								
+								});
+								$('#annotation-select2').off('change');
+								$('#annotation-select2').on('change', function(evt)
+								{
+									curProductId = $(this).val();
+									curProductImg = $('#annotation-select2 option:selected').attr('thumbnail');
+									curPrice = $('#annotation-select2 option:selected').attr('price');
+									curProductName = $('#annotation-select2 option:selected').text();
+									$('.annotation .annotation-img').attr('src', curProductImg);
+									$('#select2-annotation-select2-container').text(curProductName);
+									
+									DATA[idcurr].annotation[localid].product_id = curProductId;
+									DATA[idcurr].annotation[localid].product_name = curProductName;
+									DATA[idcurr].annotation[localid].product_img = curProductImg;
+									DATA[idcurr].annotation[localid].product_price = curPrice;
+									if(curProductId == "-1")
+									{
+										$('.annotation-button').attr('disabled', true);
+									} else
+									{
+										$('.annotation-button').attr('disabled', false);
+									}
+									
+									$('#log').val('');
+									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
+									
+								});						
 							}else{
 								changeRoom(obj.object.link);
 							}
