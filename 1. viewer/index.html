@@ -19,7 +19,7 @@
 	
 </head>
 <body>
-	<div id="app" style="position: absolute;display:none;">
+	<div id="app" style="display:none;">
 		<cart-box></cart-box>
 	</div>
 	 
@@ -61,31 +61,9 @@
 	</div>
 	
 	<!-- Vue -->
-	<script src="./lib/vue.js"></script>
+	<script src="./lib/vue.min.js"></script>
 	<script src="./lib/jquery-3.4.1.min.js"></script>
 	<script src="./lib/select2.min.js"></script>
-	
-	<!-- VueJS -->
-	<script>
-		Vue.component('CartBox', {
-		  template: '<div><button>TEST</button></div>',
-		  methods: {
-			
-		  }
-		})
-		const vueApp = new Vue({
-		  el: '#app',
-		  data: {
-			 
-		  },
-		  methods: {
-			
-		  }
-		})
-	</script>
-	
-
-
 	<script src="./point.json"></script>
 	<script type="module">
 		
@@ -95,14 +73,15 @@
 		window.THREE = THREE;
 		window.DeviceOrientationControls = DeviceOrientationControls;
 		window.OrbitControls = OrbitControls;
+
 		
-		$(document).ready(function(){
+		document.addEventListener('DOMContentLoaded', function () {
+			
 			const element = $('#container');
 			const annotation = $(".annotation");
 			const hoverlabel = $(".hoverlabel");
 			const homepage = $(".homepage");
-			const cartbox = $("#app");
-			
+
 			var canvas;
 			var camera, scene, renderer, controls, raycaster, hotcaster, spriteMaterial;
 			var mouse;
@@ -130,10 +109,11 @@
 			$('#startButton').on('click',function(){
 				homepage.remove();				
 				startButton.remove();				
-				cartbox.show();
+				$("#app").show();
 				init();
 				animate();				
 			})
+			
 			
 			annotation.ishide = true;
 			$('.close-btn').on('click',function(){				
@@ -515,7 +495,99 @@
 				camera.updateProjectionMatrix();
 				renderer.setSize( window.innerWidth, window.innerHeight );
 			}
+
+			//Vue Js///
+
+			Vue.component('CartBox', {
+				data: function ()
+				{
+					return {
+						curProduct: {} ,
+						cartProductList: [],
+						total_count: 0,
+						cart_container_style: {},
+						cart_box_show: false,
+					}
+				},
+				template: `
+				<div id="cart-container" class="cart-panel" :style="cart_container_style">
+					<div class="cart_hide_panel" @click="showCartBox"><span class="cart_item_count">{{ total_count }}</span></div>
+					<a class="btn-close-cart" @click="showCartBox"><img src="./images/icon/close.png"></img></a>
+					<div id="cart_list">
+						<div class="product_item">
+							<img src="./images/test/dell_pc.jpg" class="product_img"> 
+							<div class="product_label">
+								<h4>Medidor de pressao sonora modelo DEC-6000 com GPS filtro de banda de oitava.</h4> 
+								<a class="btn_product_remove">
+									<img src="./images/icon/remove.png">
+								</a>
+							</div> 
+							<div class="product_price">
+								<h4>R$5.298,99</h4>
+							</div> 
+							<div class="product_qty_panel">
+								<h5 class="product_qty_label">Qtd: </h5> 
+								<input type="button" value="-" class="btn_minus"> 
+								<input type="number" min="0" max="100" step="1" value="1" class="price_qty_input"> 
+								<input type="button" value="+" class="btn_plus">
+							</div>
+							<hr />
+						</div>
+					</div>
+					<div class="product_total_panel">
+						<h4 class="product_total_label">Subtotal do Carrinho: </h4>
+						<h4 class="product_total_price"> R$13.768,19</h4>
+					</div>
+					<div class="btn btn-check-out">FINALIZAR COMPRA</div>
+				</div>`,
+				mounted() {
+					let that = this
+					$('.annotation-button').on('click', function()
+					{
+						that.calcProduct()	
+					});
+				},
+				methods: {
+					showCartBox() 
+					{
+						if(this.cart_box_show)
+						{
+							this.cart_container_style = { right: '-350px'}
+							
+						} else
+						{
+							this.cart_container_style = { right: '0px' }
+						}
+
+						this.cart_box_show = !this.cart_box_show
+					},
+					calcProduct()
+					{
+						this.total_count ++
+						let curProductId = $('#annotation-select2 option:selected').attr('value')
+						let curProductName = $('#annotation-select2 option:selected').text()
+						let curProductImg = $('#annotation-select2 option:selected').attr('thumbnail')
+						let curPrice = $('#annotation-select2 option:selected').attr('price')
+						this.curProduct = {id: curProductId, name: curProductName, img: curProductImg, price: curPrice}
+						this.cartProductList.push(this.curProduct)
+					}
+				}
+			})
+
+			const vueApp = new Vue({
+				el: '#app',
+				data: {
+					
+				},
+				mounted() {
+				
+				},
+				methods: {
+					
+				}
+			})
 		})
+		
 	</script>
 </body>
 </html>
