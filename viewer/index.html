@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>360 Panorama Tour</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	
+	<meta name="description" content="360 Panorama Tour">
+	<meta itemprop="description" content="360 Panorama Tour">
+	<meta itemprop="name" content="360 Panorama Tour">
+
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta id="theme-color" name="theme-color" content="#ffffff">
+	<link type="text/css" rel="stylesheet" href="./css/select2.min.css">
+	<link type="text/css" rel="stylesheet" href="./css/main.css">
+	
+	
+	
+</head>
+<body>
+	<div id="app" style="display:none;">
+		<cart-box></cart-box>
+	</div>
+	 
+	<!--Home Page Section -->
+	<div class="loading">
+		<div class="loading-container">
+			<div class="loading-content">Loading...</div>
+		</div>
+	</div>
+	
+	<div class="homepage noselect">
+		<div class="home-title">360 Panorama Tour</div>
+		<div class="home-description">Welcome to 360 Panorama Tour,<br>Please enjoy the tour</div>
+	</div>
+	
+	<div class="btnstart noselect" id="startButton">
+		Start Button
+	</div>
+	<!--End of Home Page Section -->
+	
+	<!--Container for Canvas -->
+	<div id="container"><div class="gyrobutton noselect"><img width="50px" src="./images/gyro.png"/></div></div>
+	<!--Container for Canvas-->		
+	
+	<!--Annotation element-->	
+	<div class="annotation">
+		<div class="close-btn">X</div>
+		<div class="annotation-title" id="annotation-title">Title</div>
+		<div class="annotation-body" id="annotation-body">Description</div>
+		<select class="annotation-select2" id="annotation-select2">
+		</select>
+		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
+		<image class="annotation-img" src="./images/test/default_product.jpg" width="100%" />
+	</div>
+	
+	<!--Hover Label for Canvas-->	
+	<div class="hoverlabel">
+		Title Label
+	</div>
+	
+	<!-- Vue -->
+	<script src="./lib/vue.min.js"></script>
+	<script src="./lib/jquery-3.4.1.min.js"></script>
+	<script src="./lib/select2.min.js"></script>
+	<script src="./point.json"></script>
+	<script type="module">
+		
+		import * as THREE from './lib/three.module.js';
+		import { DeviceOrientationControls } from './lib/DeviceOrientationControls.js';
+		import { OrbitControls } from './lib/OrbitControls.js';
+		window.THREE = THREE;
+		window.DeviceOrientationControls = DeviceOrientationControls;
+		window.OrbitControls = OrbitControls;
+
+		
+		document.addEventListener('DOMContentLoaded', function () {
+			
+			const element = $('#container');
+			const annotation = $(".annotation");
+			const hoverlabel = $(".hoverlabel");
+			const homepage = $(".homepage");
+
+			var canvas;
+			var camera, scene, renderer, controls, raycaster, hotcaster, spriteMaterial;
+			var mouse;
+			var hotstop;
+			var globe;
+			var tooltipPosition,hoverlabelPosition
+			var idappend = 1;
+			var fov = 75;
+			var added = false;
+			var removed = false;
+			var markers = [], markersCounter = 1;
+			var intersects = [];
+			var isGoing = false;
+			var isArrived = false;
+			var scx = 80 - (10 * window.devicePixelRatio);
+			var scx2 = scx + 20; 
+			var scx3 = scx + 30; 
+			var dir = '+';
+			var scale = scx;
+			var scalestep = 0.1;
+			var scaleup = scx2;
+			var control = 'cursor';
+
+			
+			$('#startButton').on('click',function(){
+				homepage.remove();				
+				startButton.remove();				
+				$("#app").show();
+				init();
+				animate();				
+			})
+			
+			
+			annotation.ishide = true;
+			$('.close-btn').on('click',function(){				
+				annotation.ishide = true;
+				annotation.css('opacity','0')
+				annotation.css('left','-500px');
+			})
+			
+			var progressLoading = 0;
+			var assetLoader = new THREE.LoadingManager();
+			assetLoader.onStart = function ( url, itemsLoaded, itemsTotal ) {
+				progressLoading = 0;
+				$('.loading').show();
+			};
+			assetLoader.onLoad = function ( ) {
+				$('.loading').hide();
+			};
+			assetLoader.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+				progressLoading = Math.floor((itemsLoaded / itemsTotal) * 100);
+				$('.loading-content').html("Loading...<br>"+progressLoading+"%");
+			};
+			assetLoader.onError = function ( url ) {
+				$('.loading-content').html("There is something wrong<br>Please restart the browser");
+			};
+			
+  	
+			function init() {
+				raycaster = new THREE.Raycaster();
+				hotcaster = new THREE.Raycaster();
+				mouse = new THREE.Vector2();
+				
+				camera = new THREE.PerspectiveCamera( fov, window.innerWidth / window.innerHeight, 1, 1100 );				
+				scene = new THREE.Scene();
+				
+				spriteMaterial = new THREE.SpriteMaterial({
+					map: new THREE.TextureLoader(assetLoader).load(
+						"./images/icon/icon1.png"
+					)
+				});
+				
+				var geometry = new THREE.SphereBufferGeometry( 1000, 60, 40 );
+				geometry.scale( - 1, 1, 1 );
+				
+				var material = new THREE.MeshBasicMaterial( {
+					map: new THREE.TextureLoader(assetLoader).load( DATA[0].image )
+				});
+				
+				globe = new THREE.Mesh( geometry, material );
+				globe.name = DATA[0].name;
+				scene.add( globe );
+				
+				for(var j = 0;j<DATA[0].annotation.length;j++){
+					var map = new THREE.TextureLoader().load(
+						DATA[0].annotation[j].icon
+					)
+											
+					var arrowMaterial = new THREE.SpriteMaterial({map: map});
+					var marker = new THREE.Sprite(arrowMaterial);
+					
+					marker.scale.set(scx,scx,scx);
+					
+					marker.position.set(DATA[0].annotation[j].pointX,DATA[0].annotation[j].pointY,DATA[0].annotation[j].pointZ);
+					marker.name = 'marker';
+					marker.title = DATA[0].annotation[j].title;
+					marker.iddata = 0;
+					marker.idannotation = j;
+					marker.arrayid = markers.length;
+					marker.link = DATA[0].annotation[j].link;
+					marker.ishover = false;
+					scene.add( marker );
+					markers.push(marker)			
+				}
+				markersCounter = markers.length;
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				element.append( renderer.domElement );
+				canvas = renderer.domElement;
+				
+				element.on('mousemove',onDocumentMouseMove);
+				element.on('click',onDocumentMouseDown);
+				element.on('touchstart',onDocumentMouseDown);
+
+				window.addEventListener( 'resize', onWindowResize, false );
+				
+				if (location.protocol === 'https:') {
+					let browser = {
+					  isAndroid: /Android/.test(navigator.userAgent),
+					  isCordova: !!window.cordova,
+					  isEdge: /Edge/.test(navigator.userAgent),
+					  isFirefox: /Firefox/.test(navigator.userAgent),
+					  isChrome: /Google Inc/.test(navigator.vendor),
+					  isChromeIOS: /CriOS/.test(navigator.userAgent),
+					  isChromiumBased: !!window.chrome && !/Edge/.test(navigator.userAgent),
+					  isIE: /Trident/.test(navigator.userAgent),
+					  isIOS: /(iPhone|iPad|iPod)/.test(navigator.platform),
+					  isOpera: /OPR/.test(navigator.userAgent),
+					  isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
+					  isTouchScreen: ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch,
+					  isWebComponentsSupported: 'registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template')
+					};
+					
+					if(browser.isAndroid == true || browser.isIOS == true && supportgyro == true){
+						$('.gyrobutton').on('touchstart',toggleControls);
+						$('.gyrobutton').show();
+						control = 'gyro';
+						camera.position.z = 0;
+						controls = new DeviceOrientationControls( camera );					
+					}else{
+						control = 'mouse';
+						camera.position.z = 0.0001;
+						controls = new OrbitControls( camera, renderer.domElement );
+						controls.target.set(0, 0, 0);
+						controls.enableZoom = false;
+						controls.enablePan = false;
+						controls.enableDamping = true;
+						controls.rotateSpeed = -0.75;
+					}
+				}else{
+					//orbit control
+					camera.position.z = 0.0001;
+					controls = new OrbitControls( camera, renderer.domElement );
+					controls.target.set(0, 0, 0);
+					controls.enableZoom = false;
+					controls.enablePan = false;
+					controls.enableDamping = true;
+					controls.rotateSpeed = -0.75;
+				}
+			}
+						
+			function toggleControls(){
+				if(control == 'mouse'){
+					camera.position.z = 0;
+					controls = new DeviceOrientationControls( camera );
+					control = 'gyro';
+				}else{
+					control = 'mouse';
+					camera.position.z = 0.0001;
+					controls = new OrbitControls( camera, renderer.domElement );
+					controls.target.set(0, 0, 0);
+					controls.enableZoom = false;
+					controls.enablePan = false;
+					controls.enableDamping = true;
+					controls.rotateSpeed = -0.75;
+				}
+			}
+			
+			function animate() {
+				window.requestAnimationFrame( animate );
+
+				controls.update();
+				renderer.render(scene, camera);   				
+				updateScreenPosition();
+				
+				if(markers){
+					markers.forEach(function(marker){
+						if(dir == '+'){
+							if(scale <= scaleup){
+								scale += scalestep;
+								if(marker.ishover == false){
+									marker.scale.set(scale,scale,scale);
+								}
+							}else{
+								dir = '-'
+							}
+						}else{
+							if(scale >= scx){
+								scale -= scalestep;
+								if(marker.ishover == false)
+								marker.scale.set(scale,scale,scale);
+							}else{
+								dir = '+'
+							}
+						}
+					})
+				}
+				
+				if(isGoing == true){					
+					if(camera.zoom <= 3){
+						camera.zoom += 0.05;
+						camera.updateProjectionMatrix();
+					}
+				}
+
+				if(isArrived == true){
+					if(camera.zoom >= 1){
+						camera.zoom -= 0.05;
+						camera.updateProjectionMatrix();
+					}else{
+						isArrived = false;
+						camera.zoom = 1;
+						camera.updateProjectionMatrix();
+					}
+				}
+			}
+			
+			function updateScreenPosition() {	
+				if(hotstop && annotation.ishide == false){
+					
+					hoverlabel.css('opacity','0');
+					hoverlabel.css('top',`0px`);
+					hoverlabel.css('left',`-500px`);
+					
+					camera.updateMatrix();
+					camera.updateMatrixWorld();
+
+					var frustum = new THREE.Frustum();
+					frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));  
+					
+					if (frustum.containsPoint(hotstop.position)) {
+						tooltipPosition = hotstop.position.clone().project(camera);			        
+						tooltipPosition.x = (0.5 + tooltipPosition.x / 2) * (canvas.width / window.devicePixelRatio)//Math.round();
+						tooltipPosition.y = (0.5 - tooltipPosition.y / 2) * (canvas.height / window.devicePixelRatio)//Math.round();
+
+						annotation.css('opacity','1')
+						annotation.css('top',`${tooltipPosition.y}px`);
+						annotation.css('left',`${tooltipPosition.x}px`);
+					}else{						
+						annotation.css('opacity','0')
+						annotation.css('left','-500px');
+					}
+		        }
+			}
+			
+			function onDocumentMouseDown(event) {
+				if(event.pageX !== undefined){
+					mouse.x = event.pageX / window.innerWidth * 2 - 1;//clientX
+					mouse.y = -(event.pageY / window.innerHeight) * 2 + 1;
+				}else{					
+					mouse.x = event.touches[0].clientX / window.innerWidth * 2 - 1;
+					mouse.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+				}
+				
+				raycaster.setFromCamera(mouse, camera);
+				intersects = raycaster.intersectObjects(markers);
+				if (intersects.length > 0){
+					let obj = intersects[0];
+					let uv = obj.uv;
+					if (Math.min(uv.x, uv.y) >= 0) { 
+						if(obj.object.link == null){
+							hotstop = obj.object;
+							annotation.ishide = false;
+							$('.annotation .annotation-title').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].title);
+							$('.annotation .annotation-body').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].desc);
+							$('.annotation .annotation-img').attr('src', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img);
+							$('.annotation .annotation-select2').val(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id);
+							$('.annotation-select2').html(`<option value="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id}" thumbnail="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img}" price="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price}">${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name}</option>`);
+							$("#annotation-select2").select2({
+								allowClear: true,
+								placeholder: "Select a Product",
+							});
+							$('.select2-selection__clear').remove();
+						}else{
+							changeRoom(obj.object.link);
+						}
+					}
+				}
+				
+			    event.preventDefault();
+			}
+			
+			function changeRoom(id){
+				var id = searchLink(DATA,id);
+				var progressLoading = 0;
+				
+				var sceneManager = new THREE.LoadingManager();
+				sceneManager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+					progressLoading = 0;
+					$('.loading').show();
+				};
+				sceneManager.onLoad = function ( ) {
+					$('.loading').hide();
+					isGoing = false;
+					isArrived = true;
+					hotstop = null;
+					for(var j = 0;j<DATA[id].annotation.length;j++){
+						var map = new THREE.TextureLoader().load(
+							DATA[id].annotation[j].icon
+						)
+												
+						var arrowMaterial = new THREE.SpriteMaterial({map: map});
+						var helper = new THREE.Sprite(arrowMaterial);
+						
+						helper.scale.set(scx,scx,scx);
+						
+						helper.position.set(DATA[id].annotation[j].pointX,DATA[id].annotation[j].pointY,DATA[id].annotation[j].pointZ);
+						helper.name = 'marker';
+						helper.title = DATA[id].annotation[j].title;
+						helper.iddata = id;
+						helper.idannotation = j;
+						helper.arrayid = markers.length;
+						helper.ishover = false;
+						helper.link = DATA[id].annotation[j].link;
+						scene.add( helper );
+						markers.push(helper)			
+					}	
+				};
+				sceneManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+					progressLoading = Math.floor((itemsLoaded / itemsTotal) * 100);
+					$('.loading-content').html("Loading...<br>"+progressLoading+"%");
+				};
+				sceneManager.onError = function ( url ) {
+					$('.loading-content').html("There is something wrong<br>Please restart the browser");
+				};
+				
+				isGoing = true;
+				
+				annotation.ishide = true;
+				annotation.css('opacity','0')
+				annotation.css('left','-500px');
+
+				setTimeout(function(){
+					markers.forEach(function(marker){
+						scene.remove(marker);
+						markers = [];
+					})		
+								
+					var material = new THREE.MeshBasicMaterial( {
+						map: new THREE.TextureLoader(sceneManager).load( DATA[id].image )
+					});
+					globe.material = material;					
+				}, 500);
+			}
+			
+			function searchLink(data,val){
+				for(var i = 0; i < data.length; i++) {
+				    if(data[i].id == val) {
+					    return i;
+				        break;
+				    }
+				}
+			}
+
+			function onDocumentMouseMove(event) {				
+				mouse.x = event.clientX / window.innerWidth * 2 - 1;
+				mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+				raycaster.setFromCamera(mouse, camera);	
+				
+				if(markers){
+					markers.forEach(function(hotspot){
+						hotspot.ishover = false;
+					});	
+								
+					intersects = raycaster.intersectObjects(markers);
+					if (intersects.length > 0){
+						let obj = intersects[0];
+						let uv = obj.uv;
+						if (Math.min(uv.x, uv.y) >= 0) {
+							obj.object.ishover = true;
+							obj.object.scale.set(scx2,scx2,scx2);
+							
+							if(annotation.ishide == true){							
+								hoverlabelPosition = obj.object.position.clone().project(camera);			        
+								hoverlabelPosition.x = (0.5 + hoverlabelPosition.x / 2) * (canvas.width / window.devicePixelRatio);
+								hoverlabelPosition.y = (0.5 - hoverlabelPosition.y / 2) * (canvas.height / window.devicePixelRatio);
+								
+								hoverlabel.html(obj.object.title);
+								
+								hoverlabel.css('opacity','1')
+								hoverlabel.css('top',`${hoverlabelPosition.y}px`);
+								hoverlabel.css('left',`${hoverlabelPosition.x}px`);
+							}else{
+								hoverlabel.css('opacity','0');
+								hoverlabel.css('top',`0px`);
+								hoverlabel.css('left',`-500px`);
+							}
+						}
+					}else{
+						hoverlabel.css('opacity','0');
+						hoverlabel.css('top',`0px`);
+						hoverlabel.css('left',`-500px`);
+					}
+				}
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			//Vue Js///
+
+			Vue.component('CartBox', {
+				data: function ()
+				{
+					return {
+						curProduct: {},
+						cartProductList: [],
+						total_count: 0,
+						cart_container_style: {},
+						cart_box_show: false,
+						total_price: 0,
+					}
+				},
+				template: `
+				<div id="cart-container" class="cart-panel" :style="cart_container_style">
+					<div class="cart_hide_panel" @click="showCartBox"><span class="cart_item_count">{{ total_count }}</span></div>
+					<a class="btn-close-cart" @click="showCartBox"><img src="./images/icon/close.png"></img></a>
+					<div class="cart_list" v-if="cartProductList.length">
+							<div class="product_item" v-for="item in cartProductList" :key="item.id" >
+								<img :src="item.img" class="product_img" /> 
+								<div class="product_label">
+									<h4>{{ item.name }}</h4> 
+									<a class="btn_product_remove" @click="removeProduct(item.id)">
+										<img src="./images/icon/remove.png">
+									</a>
+								</div> 
+								<div class="product_price">
+									<h4>R$ {{ item.price }}</h4>
+								</div> 
+								<div class="product_qty_panel">
+									<h5 class="product_qty_label">Qtd: </h5> 
+									<input type="button" value="-" class="btn_minus" @click="minusQty(item.id)" /> 
+									<input type="number" min="1" max="100" step="1" :value="item.qty" class="price_qty_input" @change="changeQty" v-model="item.qty"/> 
+									<input type="button" value="+" class="btn_plus" @click="plusQty(item.id)"/>
+								</div>
+								<hr />
+							</div>
+						</div>
+					<div class="cart_list" v-else>
+						<h4 class="no-product"> There is no carded product. </h4>
+					</div>
+					<div class="product_total_panel">
+						<h4 class="product_total_label">Subtotal do Carrinho: </h4>
+						<h4 class="product_total_price"> R$ {{ total_price }}</h4>
+					</div>
+					<div class="btn btn-check-out">FINALIZAR COMPRA</div>
+				</div>`,
+				mounted() {
+					let that = this
+					$('.annotation-button').on('click', function()
+					{
+						that.calcProduct()	
+					});
+				},
+				methods: {
+					showCartBox() 
+					{
+						if(this.cart_box_show)
+						{
+							this.cart_container_style = { right: '-350px'}
+							
+						} else
+						{
+							this.cart_container_style = { right: '0px' }
+						}
+
+						this.cart_box_show = !this.cart_box_show
+					},
+					calcProduct()
+					{
+						this.total_count ++
+						let curProductId = $('#annotation-select2 option:selected').attr('value')
+						let curProductName = $('#annotation-select2 option:selected').text()
+						let curProductImg = $('#annotation-select2 option:selected').attr('thumbnail')
+						let curPrice = $('#annotation-select2 option:selected').attr('price')
+						this.curProduct = {id: curProductId, name: curProductName, img: curProductImg, price: curPrice, qty:1}
+
+						let findProduct = this.cartProductList.find((o, i) => {
+							if (o.id === curProductId) {
+								this.cartProductList[i].qty ++
+								return true
+							}
+						})
+
+						if(findProduct === undefined)
+						{
+							this.cartProductList.push(this.curProduct)
+						}
+						
+						this.total_price = 0
+						this.calcTotalPrice()
+						
+					},
+					calcTotalPrice()
+					{
+						let that = this
+						that.total_price = 0
+						that.total_count = 0
+						$.each(that.cartProductList, function(key, value) {
+							that.total_price += value.price * value.qty
+							that.total_count += parseInt(value.qty)
+						});
+						
+						this.total_price = Math.round(this.total_price * 100) / 100
+					},
+					minusQty(id)
+					{
+						this.cartProductList.find((o, i) => {
+							if (o.id === id) {
+								if(this.cartProductList[i].qty < 2)
+									return false
+								this.cartProductList[i].qty --
+								return true
+							}
+						})
+						this.calcTotalPrice()
+					},
+					plusQty(id)
+					{
+						this.cartProductList.find((o, i) => {
+							if (o.id === id) {
+								this.cartProductList[i].qty ++
+								return true
+							}
+						})
+						this.calcTotalPrice()
+					},
+					changeQty()
+					{
+						this.calcTotalPrice()
+					},
+					removeProduct(id)
+					{
+						this.cartProductList = this.cartProductList.filter(function( obj ) {
+							return obj.id !== id;
+						});
+
+						this.calcTotalPrice()
+					}
+				}
+			})
+
+			const vueApp = new Vue({
+				el: '#app',
+				data: {
+					
+				},
+				mounted() {
+				
+				},
+				methods: {
+					
+				}
+			})
+		})
+		
+	</script>
+</body>
+</html>
