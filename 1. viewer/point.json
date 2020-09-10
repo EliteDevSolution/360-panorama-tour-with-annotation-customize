@@ -5,48 +5,34 @@
         "image": "./images/room/kitchen.jpg",
         "annotation": [
             {
-                "pointX": -858.1133782776959,
-                "pointY": -256.0337371469982,
-                "pointZ": -89.93341591951548,
+                "pointX": -763.4955546844269,
+                "pointY": -220.07659205131247,
+                "pointZ": -422.6590266775544,
                 "id": 1,
                 "icon": "./images/icon/icon1.png",
                 "label": "Label-1",
-                "title": "Title-1",
-                "desc": "Description",
-                "link": null
+                "title": "Mac Labtop",
+                "desc": "This is Mac raltop",
+                "product_id": "1",
+                "product_img": "./images/test/mac_pc.jpg",
+                "product_price": "1125.35",
+                "link": null,
+                "product_name": "Medidor de Stress Termico mod. TGD-400 conforme novare visao NHO 06"
             },
             {
-                "pointX": -791.2005330298039,
-                "pointY": -148.37552096000354,
-                "pointZ": -402.47515788679266,
+                "pointX": -892.5890117847384,
+                "pointY": 22.12027060255145,
+                "pointZ": -113.116731228416,
                 "id": 2,
                 "icon": "./images/icon/icon1.png",
                 "label": "Label-2",
-                "title": "Title-2",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -645.8410275092391,
-                "pointY": -156.4476623547218,
-                "pointZ": -606.9706061464168,
-                "id": 3,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-3",
-                "title": "Title-3",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -683.6655558621597,
-                "pointY": -338.70266679135835,
-                "pointZ": -477.36960349852853,
-                "id": 4,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-4",
-                "title": "Title-4",
-                "desc": "Description",
-                "link": null
+                "title": "Dell labtop",
+                "desc": "This is dell labtop",
+                "product_id": "2",
+                "product_img": "./images/test/dell_pc.jpg",
+                "product_price": "525.15",
+                "link": null,
+                "product_name": "Medidor de pressao sonora modelo DEC-6000 com GPS filtro de banda de oitava."
             }
         ]
     },
@@ -54,113 +40,12 @@
         "id": 2,
         "name": "Image-2",
         "image": "./images/room/living-room.jpg",
-        "annotation": [
-            {
-                "pointX": 111.32673692314341,
-                "pointY": -482.594654660222,
-                "pointZ": 751.4709513778347,
-                "id": 1,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-1",
-                "title": "Title-1",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -303.29909751206947,
-                "pointY": -295.831693371681,
-                "pointZ": 794.0359487976712,
-                "id": 2,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-2",
-                "title": "Title-2",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -418.57634265788823,
-                "pointY": 183.17938375739485,
-                "pointZ": 775.3960362994308,
-                "id": 3,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-3",
-                "title": "Title-3",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -38.690530232789655,
-                "pointY": 136.9847692807632,
-                "pointZ": 888.6720785884564,
-                "id": 4,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-4",
-                "title": "Title-4",
-                "desc": "Description",
-                "link": null
-            }
-        ]
+        "annotation": []
     },
     {
         "id": 3,
         "name": "Image-3",
         "image": "./images/room/pantry.jpg",
-        "annotation": [
-            {
-                "pointX": -144.09225237870234,
-                "pointY": 357.7903072371938,
-                "pointZ": 813.1564126517131,
-                "id": 1,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-1",
-                "title": "Title-1",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -674.6643415206504,
-                "pointY": 177.87961418826416,
-                "pointZ": 568.4951096007447,
-                "id": 2,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-2",
-                "title": "Title-2",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -790.0229284667658,
-                "pointY": 142.79379931820088,
-                "pointZ": -406.7843942344657,
-                "id": 3,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-3",
-                "title": "Title-3",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -804.1537882993614,
-                "pointY": -12.637411609462367,
-                "pointZ": -403.9514974344356,
-                "id": 4,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-4",
-                "title": "Title-4",
-                "desc": "Description",
-                "link": null
-            },
-            {
-                "pointX": -701.4898458638954,
-                "pointY": -18.28764635721874,
-                "pointZ": -563.5400645902514,
-                "id": 5,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-5",
-                "title": "Title-5",
-                "desc": "Description",
-                "link": null
-            }
-        ]
+        "annotation": []
     }
 ];

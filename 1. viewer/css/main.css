@@ -166,3 +166,120 @@ div#startButton:hover{
 	color: #f00;
 }
 /* end of panorama styling */
+
+.annotation {
+    position: absolute;
+    z-index: 1;
+    margin-left: 15px;
+    margin-top: 15px;
+    padding: 1em;
+    width: 300px;
+    margin-left: -100px;
+    margin-top: 50px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: .5em;
+    font-size: 12px;
+    line-height: 1.2;
+    transition: opacity .5s;
+    top:0px;
+	left: 0px;
+	opacity: 0;
+}
+
+.annotation-title {
+    font-size: 20px;
+    margin-bottom: 8px;
+    display: block;
+}
+.annotation-body {
+    font-size: 14px;
+    display: block;
+    min-height: 100px;
+    margin-bottom: 15px;
+}
+
+button
+{
+    cursor: pointer;
+}
+
+.annotation-button
+{
+    width: 65%;
+    height: 40px;
+    background-color: #FFB512;
+    color: #000;
+    font-family: sans-serif;
+    font-size: 25px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    text-align: left;
+    padding-left: 20px
+}
+
+.annotation-button:hover
+{
+    background-color: #efa709db;
+}
+.annotation-button:active
+{
+    background-color: #FFB512;
+    border: none;
+}
+
+.annotation-button:disabled
+{
+    background-color: #868686;
+    border: none;
+}
+
+.annotation-cart-img
+{
+    margin-left: 6px;
+    position: absolute;
+}
+
+.select2-container--default .select2-selection--single
+{
+    border: none;
+}
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #aaa;
+    background-color: #323333;
+    /* border: none; */
+    color: #aaa;
+}
+
+.select2-dropdown {
+    background-color: #2e2e2b;
+    /* border: 1px solid #aaa; */
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    left: -100000px;
+    width: 100%;
+    color: #aaa;
+    z-index: 1051;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px;
+    background-color: #2d2a27ed;
+    font-size: 15px;
+    color: white;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px;
+    background-color: #2d2a27ed;
+    font-size:15px;
+}
+.annotation-select2
+{
+    width: 100%;
+    display: block;
+}

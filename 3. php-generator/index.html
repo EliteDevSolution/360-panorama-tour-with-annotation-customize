@@ -90,6 +90,7 @@
 			var curProductId = -1;
 			var curProductImg = "";
 			var curPrice = "";
+			var curProductName = "";
 
 			$("#annotation-select2").select2( {
 				allowClear: true,
@@ -202,6 +203,7 @@
 					marker.arrayid = markers.length;
 					marker.link = DATA[0].annotation[j].link;
 					marker.product_id = DATA[0].annotation[j].product_id;
+					marker.product_name = DATA[0].annotation[j].product_name;
 					marker.product_img = DATA[0].annotation[j].product_img;
 					marker.product_price = DATA[0].annotation[j].product_price;
 					scene.add( marker );
@@ -402,10 +404,12 @@
 									curProductId = $(this).val();
 									curProductImg = $('#annotation-select2 option:selected').attr('thumbnail');
 									curPrice = $('#annotation-select2 option:selected').attr('price');
+									curProductName = $('#annotation-select2 option:selected').text();
 									$('.annotation .annotation-img').attr('src', curProductImg);
-									$('#select2-annotation-select2-container').text($('#annotation-select2 option:selected').text());
+									$('#select2-annotation-select2-container').text(curProductName);
 									
 									DATA[idcurr].annotation[localid].product_id = curProductId;
+									DATA[idcurr].annotation[localid].product_name = curProductName;
 									DATA[idcurr].annotation[localid].product_img = curProductImg;
 									DATA[idcurr].annotation[localid].product_price = curPrice;
 									if(curProductId == "-1")

@@ -12,13 +12,14 @@
 
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta id="theme-color" name="theme-color" content="#ffffff">
+	<link type="text/css" rel="stylesheet" href="./css/select2.min.css">
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
 	
-	<!-- Vue -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	
+	
 </head>
 <body>
-	<div id="app" style="position: absolute;">
+	<div id="app" style="position: absolute;display:none;">
 		<cart-box></cart-box>
 	</div>
 	 
@@ -45,9 +46,13 @@
 	
 	<!--Annotation element-->	
 	<div class="annotation">
-		<div class="close-btn noselect">X</div>
-		<div class="annotation-title">Title</div>
-		<div class="annotation-body">Description</div>
+		<div class="close-btn">X</div>
+		<div class="annotation-title" id="annotation-title">Title</div>
+		<div class="annotation-body" id="annotation-body">Description</div>
+		<select class="annotation-select2" id="annotation-select2">
+		</select>
+		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
+		<image class="annotation-img" src="./images/test/default_product.jpg" width="100%" />
 	</div>
 	
 	<!--Hover Label for Canvas-->	
@@ -55,12 +60,17 @@
 		Title Label
 	</div>
 	
+	<!-- Vue -->
+	<script src="./lib/vue.js"></script>
+	<script src="./lib/jquery-3.4.1.min.js"></script>
+	<script src="./lib/select2.min.js"></script>
+	
 	<!-- VueJS -->
 	<script>
 		Vue.component('CartBox', {
-		  template: "<div><button>TEST</button></div>",
+		  template: '<div><button>TEST</button></div>',
 		  methods: {
-	 
+			
 		  }
 		})
 		const vueApp = new Vue({
@@ -69,12 +79,13 @@
 			 
 		  },
 		  methods: {
-	 
+			
 		  }
 		})
 	</script>
+	
 
-	<script src="./lib/jquery-3.4.1.min.js"></script>
+
 	<script src="./point.json"></script>
 	<script type="module">
 		
@@ -90,6 +101,7 @@
 			const annotation = $(".annotation");
 			const hoverlabel = $(".hoverlabel");
 			const homepage = $(".homepage");
+			const cartbox = $("#app");
 			
 			var canvas;
 			var camera, scene, renderer, controls, raycaster, hotcaster, spriteMaterial;
@@ -114,9 +126,11 @@
 			var scaleup = scx2;
 			var control = 'cursor';
 
+			
 			$('#startButton').on('click',function(){
 				homepage.remove();				
 				startButton.remove();				
+				cartbox.show();
 				init();
 				animate();				
 			})
@@ -365,6 +379,14 @@
 							annotation.ishide = false;
 							$('.annotation .annotation-title').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].title);
 							$('.annotation .annotation-body').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].desc);
+							$('.annotation .annotation-img').attr('src', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img);
+							$('.annotation .annotation-select2').val(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id);
+							$('.annotation-select2').html(`<option value="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id}" thumbnail="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img}" price="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price}">${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name}</option>`);
+							$("#annotation-select2").select2({
+								allowClear: true,
+								placeholder: "Select a Product",
+							});
+							$('.select2-selection__clear').remove();
 						}else{
 							changeRoom(obj.object.link);
 						}
