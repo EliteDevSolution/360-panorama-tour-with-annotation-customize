@@ -357,7 +357,7 @@ span.cart_item_count
     font-size: 10px;
 }
 
-div#cart_list
+.cart_list
 {
     position: relative;
     bottom: 0px;
@@ -501,6 +501,11 @@ hr
     width: 88%;
     background-color: #ccc;
     height: 1px;border: none;
-    margin-bottom:25px;
+    margin-bottom:35px;
 }
 
+.no-product
+{
+    text-align: center;
+    font-weight: 500;
+}

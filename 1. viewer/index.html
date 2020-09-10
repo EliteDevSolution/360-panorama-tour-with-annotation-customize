@@ -502,41 +502,45 @@
 				data: function ()
 				{
 					return {
-						curProduct: {} ,
+						curProduct: {},
 						cartProductList: [],
 						total_count: 0,
 						cart_container_style: {},
 						cart_box_show: false,
+						total_price: 0,
 					}
 				},
 				template: `
 				<div id="cart-container" class="cart-panel" :style="cart_container_style">
 					<div class="cart_hide_panel" @click="showCartBox"><span class="cart_item_count">{{ total_count }}</span></div>
 					<a class="btn-close-cart" @click="showCartBox"><img src="./images/icon/close.png"></img></a>
-					<div id="cart_list">
-						<div class="product_item">
-							<img src="./images/test/dell_pc.jpg" class="product_img"> 
-							<div class="product_label">
-								<h4>Medidor de pressao sonora modelo DEC-6000 com GPS filtro de banda de oitava.</h4> 
-								<a class="btn_product_remove">
-									<img src="./images/icon/remove.png">
-								</a>
-							</div> 
-							<div class="product_price">
-								<h4>R$5.298,99</h4>
-							</div> 
-							<div class="product_qty_panel">
-								<h5 class="product_qty_label">Qtd: </h5> 
-								<input type="button" value="-" class="btn_minus"> 
-								<input type="number" min="0" max="100" step="1" value="1" class="price_qty_input"> 
-								<input type="button" value="+" class="btn_plus">
+					<div class="cart_list" v-if="cartProductList.length">
+							<div class="product_item" v-for="item in cartProductList" :key="item.id" >
+								<img :src="item.img" class="product_img" /> 
+								<div class="product_label">
+									<h4>{{ item.name }}</h4> 
+									<a class="btn_product_remove" @click="removeProduct(item.id)">
+										<img src="./images/icon/remove.png">
+									</a>
+								</div> 
+								<div class="product_price">
+									<h4>R$ {{ item.price }}</h4>
+								</div> 
+								<div class="product_qty_panel">
+									<h5 class="product_qty_label">Qtd: </h5> 
+									<input type="button" value="-" class="btn_minus" @click="minusQty(item.id)" /> 
+									<input type="number" min="1" max="100" step="1" :value="item.qty" class="price_qty_input" @change="changeQty" v-model="item.qty"/> 
+									<input type="button" value="+" class="btn_plus" @click="plusQty(item.id)"/>
+								</div>
+								<hr />
 							</div>
-							<hr />
 						</div>
+					<div class="cart_list" v-else>
+						<h4 class="no-product"> There is no carded product. </h4>
 					</div>
 					<div class="product_total_panel">
 						<h4 class="product_total_label">Subtotal do Carrinho: </h4>
-						<h4 class="product_total_price"> R$13.768,19</h4>
+						<h4 class="product_total_price"> R$ {{ total_price }}</h4>
 					</div>
 					<div class="btn btn-check-out">FINALIZAR COMPRA</div>
 				</div>`,
@@ -568,8 +572,69 @@
 						let curProductName = $('#annotation-select2 option:selected').text()
 						let curProductImg = $('#annotation-select2 option:selected').attr('thumbnail')
 						let curPrice = $('#annotation-select2 option:selected').attr('price')
-						this.curProduct = {id: curProductId, name: curProductName, img: curProductImg, price: curPrice}
-						this.cartProductList.push(this.curProduct)
+						this.curProduct = {id: curProductId, name: curProductName, img: curProductImg, price: curPrice, qty:1}
+
+						let findProduct = this.cartProductList.find((o, i) => {
+							if (o.id === curProductId) {
+								this.cartProductList[i].qty ++
+								return true
+							}
+						})
+
+						if(findProduct === undefined)
+						{
+							this.cartProductList.push(this.curProduct)
+						}
+						
+						this.total_price = 0
+						this.calcTotalPrice()
+						
+					},
+					calcTotalPrice()
+					{
+						let that = this
+						that.total_price = 0
+						that.total_count = 0
+						$.each(that.cartProductList, function(key, value) {
+							that.total_price += value.price * value.qty
+							that.total_count += parseInt(value.qty)
+						});
+						
+						this.total_price = Math.round(this.total_price * 100) / 100
+					},
+					minusQty(id)
+					{
+						this.cartProductList.find((o, i) => {
+							if (o.id === id) {
+								if(this.cartProductList[i].qty < 2)
+									return false
+								this.cartProductList[i].qty --
+								return true
+							}
+						})
+						this.calcTotalPrice()
+					},
+					plusQty(id)
+					{
+						this.cartProductList.find((o, i) => {
+							if (o.id === id) {
+								this.cartProductList[i].qty ++
+								return true
+							}
+						})
+						this.calcTotalPrice()
+					},
+					changeQty()
+					{
+						this.calcTotalPrice()
+					},
+					removeProduct(id)
+					{
+						this.cartProductList = this.cartProductList.filter(function( obj ) {
+							return obj.id !== id;
+						});
+
+						this.calcTotalPrice()
 					}
 				}
 			})
