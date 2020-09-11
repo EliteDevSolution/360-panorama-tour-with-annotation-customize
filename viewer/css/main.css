@@ -5,7 +5,6 @@ body, html{
     height: 100vh;
     width: 100vw;
     font-family: sans-serif;
-    background-image: url(../images/crew--3can7MahTA-unsplash.jpg);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -195,8 +194,16 @@ div#startButton:hover{
 .annotation-body {
     font-size: 14px;
     display: block;
-    min-height: 100px;
     margin-bottom: 15px;
+}
+
+.annotation-price
+{
+    margin-top: 10px;
+    margin-bottom: 13px;
+    font-size: 1.2rem;
+    color: #FFEB3B;
+    font-weight: 700;
 }
 
 button
@@ -242,46 +249,9 @@ button
     position: absolute;
 }
 
-.select2-container--default .select2-selection--single
+.annotation-product
 {
-    border: none;
-}
-.select2-container--default .select2-search--dropdown .select2-search__field {
-    border: 1px solid #aaa;
-    background-color: #323333;
-    /* border: none; */
-    color: #aaa;
-}
-
-.select2-dropdown {
-    background-color: #2e2e2b;
-    /* border: 1px solid #aaa; */
-    border-radius: 4px;
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    left: -100000px;
-    width: 100%;
-    color: #aaa;
-    z-index: 1051;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 28px;
-    background-color: #2d2a27ed;
-    font-size: 15px;
-    color: white;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 28px;
-    background-color: #2d2a27ed;
-    font-size:15px;
-}
-.annotation-select2
-{
-    width: 100%;
-    display: block;
+    font-size: 0.9rem;
 }
 
 div#cart-container{
