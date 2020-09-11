@@ -445,6 +445,9 @@ a.btn-close-cart
     border-top: 1px solid #9E9E9E;
     border-bottom: 1px solid #9E9E9E;
     text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9e9e9e;
 }
 
 .product_total_panel
