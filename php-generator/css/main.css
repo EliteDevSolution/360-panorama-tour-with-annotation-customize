@@ -190,6 +190,13 @@ button
     padding-left: 20px
 }
 
+.annotation-img
+{
+    width: 65%;
+    margin-left: 15%;
+    margin-right: auto;
+}
+
 .annotation-button:hover
 {
     background-color: #efa709db;
@@ -252,6 +259,11 @@ button
 {
     width: 100%;
     display: block;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #2e2e2b;
+    border-radius: 4px;
 }
 
 .close-btn {

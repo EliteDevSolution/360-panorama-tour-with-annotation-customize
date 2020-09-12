@@ -251,7 +251,7 @@ button
 
 .annotation-product
 {
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 div#cart-container{
@@ -352,13 +352,13 @@ a.btn-close-cart
 .product_img
 {
     margin-left: 20px;
-    width:60px;
+    width:80px;
 }
 .product_label
 {
     width: 65%;
     position: relative;
-    top: -60px;
+    top: -90px;
     right: -96px;
 }
 
@@ -366,7 +366,7 @@ a.btn-close-cart
 {
     right: -17px;
     position: absolute;
-    top: 20px;
+    top: 0px;
     cursor:pointer;
 }
 
