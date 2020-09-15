@@ -254,6 +254,18 @@ button
     font-size: 1rem;
 }
 
+.annotation-img{
+    width: 90%;
+    margin-left: 13px;
+    border: 1px solid #3a3939;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    border-radius: 0px;
+    -webkit-box-shadow: 0 10px 6px -6px #0f0b0c;
+    -moz-box-shadow: 0 10px 6px -6px #0f0b0c;
+    box-shadow: 0 10px 6px -6px #0f0b0c;
+}
+
 div#cart-container{
     transition: all 0.5s ease;
     display: inline-block;

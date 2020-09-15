@@ -38,7 +38,7 @@
 		<div class="close-btn">X</div>
 		<div class="annotation-title" id="annotation-title">Title</div>
 		<div class="annotation-body" id="annotation-body">Description</div>
-		<image class="annotation-img" src="./images/test/default_product.jpg" width="100%" />
+		<image class="annotation-img" src="./images/test/default_product.jpg" />
 		<div class="annotation-price" id="annotation-price"></div>
 		<div class="annotation-product" id="annotation-product"></div>
 		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
@@ -490,7 +490,8 @@
 						cart_container_style: {},
 						cart_box_show: false,
 						total_price: 0,
-						str_total_price: "",
+						str_total_price: '',
+						store_url: 'https://store.uwood.com.br/outsidecart/index/carting'
 					}
 				},
 				template: `
@@ -525,7 +526,7 @@
 						<h4 class="product_total_label">Subtotal do Carrinho: </h4>
 						<h4 class="product_total_price">{{ str_total_price }}</h4>
 					</div>
-					<div class="btn btn-check-out">FINALIZAR COMPRA</div>
+					<div class="btn btn-check-out" @click="gotoStore">FINALIZAR COMPRA</div>
 				</div>`,
 				mounted() {
 					let that = this
@@ -632,7 +633,20 @@
 						});
 
 						this.calcTotalPrice()
-					}
+					},
+					gotoStore()
+					{
+						if(this.cartProductList.length === 0) 
+							return;
+						let product_str = '';
+						this.cartProductList.forEach((val) => {
+							console.log(val)
+							product_str += (val.id + '_' + val.qty + ',')
+						})
+						product_str = product_str.slice(0, -1); 
+						//location.href = this.store_url + '?product=' + product_str
+						window.open(this.store_url + '?product=' + product_str, '_blank')
+					},
 				}
 			})
 
