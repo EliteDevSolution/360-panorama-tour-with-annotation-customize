@@ -47,12 +47,9 @@
 		<div class="annotation-title" contenteditable="true" id="annotation-title">Title</div>
 		<div class="annotation-body" contenteditable="true" id="annotation-body">Description</div>
 		<select class="annotation-select2" id="annotation-select2">
-			<option value="-1" thumbnail="./assets/default_product.jpg" price="">No Select Product</option>
-			<option value="1" thumbnail="./images/test/mac_pc.jpg" price="1125.35">Medidor de Stress Termico mod. TGD-400 conforme novare visao NHO 06</option>
-			<option value="2" thumbnail="./images/test/dell_pc.jpg" price="525.15">Medidor de pressao sonora modelo DEC-6000 com GPS filtro de banda de oitava.</option>
 		</select>
 		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
-		<image class="annotation-img" src="./assets/default_product.jpg" width="100%" />
+		<image class="annotation-img" src="./assets/default_product.png" />
 	</div>
 	
 	<script src="./lib/jquery-3.4.1.min.js"></script>
@@ -91,11 +88,20 @@
 			var curProductImg = "";
 			var curPrice = "";
 			var curProductName = "";
+			var productUrl = "https://store.uwood.com.br/media/catalog/product/";
 
-			$("#annotation-select2").select2( {
-				allowClear: true,
-				placeholder: "Select a Product",
-			});
+			function formatRepo (repo) {
+				if (repo.loading) {
+					return repo.text;
+				}
+				var $container = repo.name + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(repo.price)})`;
+				return $container;
+			}
+
+			function formatRepoSelection (repo) {
+				var container = repo.text || repo.name + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(repo.price)})`;
+				return container;
+			}
 			
 			var jqxhr = $.get( "uploader.php?param=image", function(e) {
 				let data = JSON.parse(e);
@@ -238,7 +244,7 @@
 			function animate() {
 				window.requestAnimationFrame( animate );
 				controls.update();
-				renderer.render(scene, camera);   				
+				renderer.render(scene, camera);
 				updateScreenPosition();
 			}
 			
@@ -324,7 +330,7 @@
 						title : "Title-"+localmarkcount,
 						desc : "Description",
 						product_id: "-1",
-						product_img: "./assets/default_product.jpg",
+						product_img: "./assets/default_product.png",
 						product_price:"",
 						link : null
 					});
@@ -354,7 +360,6 @@
 						}
 					}
 				}else{
-					$('.annotation-button').attr('disabled', false);
 					intersects = raycaster.intersectObjects(markers);
 					if (intersects.length > 0){
 						let obj = intersects[0];
@@ -367,18 +372,12 @@
 								let idcurr = searchLink(DATA,currentidx);
 								let localid = searchLink(DATA[idcurr].annotation,obj.object.localid);
 								
-								console.log(obj.object.localid);
-								
-								console.log(DATA[idcurr].annotation);
-								console.log(idcurr);
-								console.log(localid);
-								console.log(DATA[idcurr].annotation[localid]);
 								
 								$('.annotation .annotation-title').html(DATA[idcurr].annotation[localid].title);
 								$('.annotation .annotation-body').html(DATA[idcurr].annotation[localid].desc);
 								$('.annotation .annotation-img').attr('src', DATA[idcurr].annotation[localid].product_img);
 								$('#annotation-select2').val(DATA[idcurr].annotation[localid].product_id);
-								$('#select2-annotation-select2-container').text($('#annotation-select2 option:selected').text());
+								$('#select2-annotation-select2-container').text(DATA[idcurr].annotation[localid].product_name + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(DATA[idcurr].annotation[localid].product_price)}`);
 								if(DATA[idcurr].annotation[localid].product_id == "-1")
 								{
 									$('.annotation-button').attr('disabled', true);
@@ -398,32 +397,55 @@
 									$('#log').val('');
 									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
 								});
-								$('#annotation-select2').off('change');
-								$('#annotation-select2').on('change', function(evt)
-								{
-									curProductId = $(this).val();
-									curProductImg = $('#annotation-select2 option:selected').attr('thumbnail');
-									curPrice = $('#annotation-select2 option:selected').attr('price');
-									curProductName = $('#annotation-select2 option:selected').text();
+								$('#annotation-select2').off('select2:select');
+
+								$('#annotation-select2').select2({
+									ajax: {
+										type: "GET",
+										url: "process.php?param=fetch",
+										dataType: 'json',
+										delay: 600,
+										data: function (params) {
+											let result = {"search":params.term};
+											return result;
+										},
+										processResults: function (data, params) {
+											return {
+												results:data
+											};
+										},
+										cache: true
+									},
+									tags: false,
+									placeholder: 'Search for a products',
+									minimumInputLength: 3,
+									templateResult: formatRepo,
+									templateSelection: formatRepoSelection
+								}).on('select2:select', function (e) {
+									let data = e.params.data;
+									curProductId = data.id;
+									curProductImg = productUrl + data.media_gallery_entries[0].file;
+									curPrice = data.price;
+									curProductName = data.name
+									$(this).children('[value="'+data.id+'"]').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
+									$(this).children('[value="'+data.id+'"]').attr({
+										'thumbnail':data.media_gallery_entries[0].file, 
+										'price':data.price 
+									});
+
 									$('.annotation .annotation-img').attr('src', curProductImg);
-									$('#select2-annotation-select2-container').text(curProductName);
-									
+									$('#select2-annotation-select2-container').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
+
 									DATA[idcurr].annotation[localid].product_id = curProductId;
 									DATA[idcurr].annotation[localid].product_name = curProductName;
 									DATA[idcurr].annotation[localid].product_img = curProductImg;
 									DATA[idcurr].annotation[localid].product_price = curPrice;
-									if(curProductId == "-1")
-									{
-										$('.annotation-button').attr('disabled', true);
-									} else
-									{
-										$('.annotation-button').attr('disabled', false);
-									}
-									
+
 									$('#log').val('');
-									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
-									
-								});						
+									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');	
+								
+								});
+
 							}else{
 								changeRoom(obj.object.link);
 							}

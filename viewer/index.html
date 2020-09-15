@@ -12,14 +12,13 @@
 
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta id="theme-color" name="theme-color" content="#ffffff">
-	<link type="text/css" rel="stylesheet" href="./css/select2.min.css">
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
 	
 	
 	
 </head>
 <body>
-	<div id="app" style="display:none;">
+	<div id="app">
 		<cart-box></cart-box>
 	</div>
 	 
@@ -29,19 +28,9 @@
 			<div class="loading-content">Loading...</div>
 		</div>
 	</div>
-	
-	<div class="homepage noselect">
-		<div class="home-title">360 Panorama Tour</div>
-		<div class="home-description">Welcome to 360 Panorama Tour,<br>Please enjoy the tour</div>
-	</div>
-	
-	<div class="btnstart noselect" id="startButton">
-		Start Button
-	</div>
-	<!--End of Home Page Section -->
-	
+
 	<!--Container for Canvas -->
-	<div id="container"><div class="gyrobutton noselect"><img width="50px" src="./images/gyro.png"/></div></div>
+	<div id="container"><div class="gyrobutton"><img width="50px" src="./images/gyro.png"/></div></div>
 	<!--Container for Canvas-->		
 	
 	<!--Annotation element-->	
@@ -49,10 +38,11 @@
 		<div class="close-btn">X</div>
 		<div class="annotation-title" id="annotation-title">Title</div>
 		<div class="annotation-body" id="annotation-body">Description</div>
-		<select class="annotation-select2" id="annotation-select2">
-		</select>
+		<image class="annotation-img" src="./images/test/default_product.jpg" />
+		<div class="annotation-price" id="annotation-price"></div>
+		<div class="annotation-product" id="annotation-product"></div>
 		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
-		<image class="annotation-img" src="./images/test/default_product.jpg" width="100%" />
+		
 	</div>
 	
 	<!--Hover Label for Canvas-->	
@@ -63,7 +53,6 @@
 	<!-- Vue -->
 	<script src="./lib/vue.min.js"></script>
 	<script src="./lib/jquery-3.4.1.min.js"></script>
-	<script src="./lib/select2.min.js"></script>
 	<script src="./point.json"></script>
 	<script type="module">
 		
@@ -106,14 +95,8 @@
 			var control = 'cursor';
 
 			
-			$('#startButton').on('click',function(){
-				homepage.remove();				
-				startButton.remove();				
-				$("#app").show();
-				init();
-				animate();				
-			})
-			
+			init();
+			animate();				
 			
 			annotation.ishide = true;
 			$('.close-btn').on('click',function(){				
@@ -360,13 +343,12 @@
 							$('.annotation .annotation-title').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].title);
 							$('.annotation .annotation-body').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].desc);
 							$('.annotation .annotation-img').attr('src', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img);
-							$('.annotation .annotation-select2').val(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id);
-							$('.annotation-select2').html(`<option value="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id}" thumbnail="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img}" price="${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price}">${DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name}</option>`);
-							$("#annotation-select2").select2({
-								allowClear: true,
-								placeholder: "Select a Product",
-							});
-							$('.select2-selection__clear').remove();
+							$('.annotation .annotation-price').html(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price));
+							$('.annotation .annotation-product').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name);
+							$('.annotation .annotation-product').attr('value', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id)
+							$('.annotation .annotation-product').attr('thumbnail', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img)
+							$('.annotation .annotation-product').attr('price', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price)
+
 						}else{
 							changeRoom(obj.object.link);
 						}
@@ -508,12 +490,14 @@
 						cart_container_style: {},
 						cart_box_show: false,
 						total_price: 0,
+						str_total_price: '',
+						store_url: 'https://store.uwood.com.br/outsidecart/index/carting'
 					}
 				},
 				template: `
 				<div id="cart-container" class="cart-panel" :style="cart_container_style">
-					<div class="cart_hide_panel" @click="showCartBox"><span class="cart_item_count">{{ total_count }}</span></div>
-					<a class="btn-close-cart" @click="showCartBox"><img src="./images/icon/close.png"></img></a>
+					<div class="cart_hide_panel" @click="showCartBox(0)"><span class="cart_item_count">{{ total_count }}</span></div>
+					<a class="btn-close-cart" @click="showCartBox(0)"><img src="./images/icon/close.png"></img></a>
 					<div class="cart_list" v-if="cartProductList.length">
 							<div class="product_item" v-for="item in cartProductList" :key="item.id" >
 								<img :src="item.img" class="product_img" /> 
@@ -524,7 +508,7 @@
 									</a>
 								</div> 
 								<div class="product_price">
-									<h4>R$ {{ item.price }}</h4>
+									<h4>{{ item.str_price }}</h4>
 								</div> 
 								<div class="product_qty_panel">
 									<h5 class="product_qty_label">Qtd: </h5> 
@@ -540,39 +524,52 @@
 					</div>
 					<div class="product_total_panel">
 						<h4 class="product_total_label">Subtotal do Carrinho: </h4>
-						<h4 class="product_total_price"> R$ {{ total_price }}</h4>
+						<h4 class="product_total_price">{{ str_total_price }}</h4>
 					</div>
-					<div class="btn btn-check-out">FINALIZAR COMPRA</div>
+					<div class="btn btn-check-out" @click="gotoStore">FINALIZAR COMPRA</div>
 				</div>`,
 				mounted() {
 					let that = this
 					$('.annotation-button').on('click', function()
 					{
-						that.calcProduct()	
+						that.calcProduct()
+						that.showCartBox(1)
 					});
 				},
 				methods: {
-					showCartBox() 
+					showCartBox(flag) 
 					{
-						if(this.cart_box_show)
+						if(flag === 1)
 						{
-							this.cart_container_style = { right: '-350px'}
-							
-						} else
+							if(!this.cart_box_show)
+							{
+								this.cart_container_style = { right: '0px'}
+								this.cart_box_show = !this.cart_box_show
+								return
+							}
+						} else 
 						{
-							this.cart_container_style = { right: '0px' }
-						}
+							if(this.cart_box_show)
+							{
+								this.cart_container_style = { right: '-350px'}
+								
+							} else
+							{
+								this.cart_container_style = { right: '0px' }
+							}
 
-						this.cart_box_show = !this.cart_box_show
+							this.cart_box_show = !this.cart_box_show
+						}
 					},
 					calcProduct()
 					{
 						this.total_count ++
-						let curProductId = $('#annotation-select2 option:selected').attr('value')
-						let curProductName = $('#annotation-select2 option:selected').text()
-						let curProductImg = $('#annotation-select2 option:selected').attr('thumbnail')
-						let curPrice = $('#annotation-select2 option:selected').attr('price')
-						this.curProduct = {id: curProductId, name: curProductName, img: curProductImg, price: curPrice, qty:1}
+						let curProductId = $('#annotation-product').attr('value')
+						let curProductName = $('#annotation-product').text()
+						let curProductImg = $('#annotation-product').attr('thumbnail')
+						let curPrice = $('#annotation-product').attr('price')
+						let strPrice = this.str_total_price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)
+						this.curProduct = {id: curProductId, name: curProductName, img: curProductImg, price: curPrice, qty:1, str_price: strPrice}
 
 						let findProduct = this.cartProductList.find((o, i) => {
 							if (o.id === curProductId) {
@@ -601,6 +598,7 @@
 						});
 						
 						this.total_price = Math.round(this.total_price * 100) / 100
+						this.str_total_price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(this.total_price)
 					},
 					minusQty(id)
 					{
@@ -635,7 +633,20 @@
 						});
 
 						this.calcTotalPrice()
-					}
+					},
+					gotoStore()
+					{
+						if(this.cartProductList.length === 0) 
+							return;
+						let product_str = '';
+						this.cartProductList.forEach((val) => {
+							console.log(val)
+							product_str += (val.id + '_' + val.qty + ',')
+						})
+						product_str = product_str.slice(0, -1); 
+						//location.href = this.store_url + '?product=' + product_str
+						window.open(this.store_url + '?product=' + product_str, '_blank')
+					},
 				}
 			})
 
