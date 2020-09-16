@@ -88,6 +88,8 @@
 			var curProductImg = "";
 			var curPrice = "";
 			var curProductName = "";
+			var curMetaDescription = "";
+			var curProductThumbnail = "";
 			var productUrl = "https://store.uwood.com.br/media/catalog/product/";
 
 			function formatRepo (repo) {
@@ -424,7 +426,14 @@
 								}).on('select2:select', function (e) {
 									let data = e.params.data;
 									curProductId = data.id;
-									curProductImg = productUrl + data.media_gallery_entries[0].file;
+									curMetaDescription = findProductCustomAttr(data.custom_attributes, 'meta_description');
+									curProductThumbnail = findProductCustomAttr(data.custom_attributes, 'thumbnail');
+									if(curProductThumbnail == '') 
+									{
+										curProductImg = './assets/default_product.png'
+									} else {
+										curProductImg = productUrl + curProductThumbnail;
+									}
 									curPrice = data.price;
 									curProductName = data.name
 									$(this).children('[value="'+data.id+'"]').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
@@ -435,12 +444,16 @@
 
 									$('.annotation .annotation-img').attr('src', curProductImg);
 									$('#select2-annotation-select2-container').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
+									$('.annotation .annotation-title').text(curProductName);
+									$('.annotation .annotation-body').text(curMetaDescription);
 
-									DATA[idcurr].annotation[localid].product_id = curProductId;
+									DATA[idcurr].annotation[localid].title = curProductName;
+									DATA[idcurr].annotation[localid].desc = curMetaDescription;
 									DATA[idcurr].annotation[localid].product_name = curProductName;
 									DATA[idcurr].annotation[localid].product_img = curProductImg;
 									DATA[idcurr].annotation[localid].product_price = curPrice;
-
+									DATA[idcurr].annotation[localid].product_detail = curMetaDescription;
+									
 									$('#log').val('');
 									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');	
 								
@@ -457,6 +470,23 @@
 			    element.off('mouseup');
 			    element.on('mouseup',onDocumentMouseUp);
 			}
+
+			
+			function findProductCustomAttr(attrlist, findVal)
+			{
+				let findAttr = attrlist.find((o, i) => {
+					if (o.attribute_code == findVal) {
+						return true
+					}
+				});
+				if(findAttr === undefined || findAttr.length == 0)
+				{
+					return '';
+				}  else {
+					return findAttr.value;
+				}
+			}
+
 			
 			function changeImage(){
 				$('.gallery-item').removeClass('selected');

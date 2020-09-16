@@ -42,7 +42,6 @@
 		<div class="annotation-price" id="annotation-price"></div>
 		<div class="annotation-product" id="annotation-product"></div>
 		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
-		
 	</div>
 	
 	<!--Hover Label for Canvas-->	
@@ -53,6 +52,8 @@
 	<!-- Vue -->
 	<script src="./lib/vue.min.js"></script>
 	<script src="./lib/jquery-3.4.1.min.js"></script>
+	<script src="./lib/jquery.slimscroll.min.js"></script>
+
 	<script src="./point.json"></script>
 	<script type="module">
 		
@@ -94,7 +95,8 @@
 			var scaleup = scx2;
 			var control = 'cursor';
 
-			
+			 
+
 			init();
 			animate();				
 			
@@ -340,7 +342,7 @@
 						if(obj.object.link == null){
 							hotstop = obj.object;
 							annotation.ishide = false;
-							$('.annotation .annotation-title').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].title);
+							$('.annotation .annotation-title').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name);
 							$('.annotation .annotation-body').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].desc);
 							$('.annotation .annotation-img').attr('src', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img);
 							$('.annotation .annotation-price').html(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price));
@@ -535,6 +537,17 @@
 						that.calcProduct()
 						that.showCartBox(1)
 					});
+
+					$('.cart_list').slimScroll({
+						height: `${window.innerHeight - 140}px`,
+						alwaysVisible: false,
+						railVisible: true,
+						railColor: '#222',
+						railOpacity: 0.3,
+						wheelStep: 10,
+						allowPageScroll: true,
+						disableFadeOut: true
+					});
 				},
 				methods: {
 					showCartBox(flag) 
@@ -565,7 +578,7 @@
 					{
 						this.total_count ++
 						let curProductId = $('#annotation-product').attr('value')
-						let curProductName = $('#annotation-product').text()
+						let curProductName = $('#annotation-title').text()
 						let curProductImg = $('#annotation-product').attr('thumbnail')
 						let curPrice = $('#annotation-product').attr('price')
 						let strPrice = this.str_total_price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)
