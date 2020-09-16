@@ -98,6 +98,6 @@ class Carting extends \Magento\Framework\App\Action\Action
             $this->messageManager->addException($e, __('error.'));
         }
         /*cart page*/
-        $this->getResponse()->setRedirect('/checkout/cart/index');
+        $this->getResponse()->setRedirect('/checkout');
     }
 }
