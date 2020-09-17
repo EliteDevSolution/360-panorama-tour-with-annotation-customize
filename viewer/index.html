@@ -71,7 +71,6 @@
 			const annotation = $(".annotation");
 			const hoverlabel = $(".hoverlabel");
 			const homepage = $(".homepage");
-
 			var canvas;
 			var camera, scene, renderer, controls, raycaster, hotcaster, spriteMaterial;
 			var mouse;
@@ -342,6 +341,7 @@
 						if(obj.object.link == null){
 							hotstop = obj.object;
 							annotation.ishide = false;
+							$('.annotation .annotation-img').show();
 							$('.annotation .annotation-title').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name);
 							$('.annotation .annotation-body').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].desc);
 							$('.annotation .annotation-img').attr('src', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img);
