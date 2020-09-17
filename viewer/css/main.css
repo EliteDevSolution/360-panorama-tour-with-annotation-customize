@@ -267,6 +267,7 @@ button
     -webkit-box-shadow: 0 10px 6px -6px #0f0b0c;
     -moz-box-shadow: 0 10px 6px -6px #0f0b0c;
     box-shadow: 0 10px 6px -6px #0f0b0c;
+    display: none;
 }
 
 div#cart-container{
