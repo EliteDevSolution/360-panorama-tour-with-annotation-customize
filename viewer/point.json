@@ -1,55 +1,72 @@
-﻿var supportgyro = true;
-
-var DATA = [
+﻿var DATA = [
     {
         "id": 1,
         "name": "Image-1",
         "image": "./images/room/kitchen.jpg",
         "annotation": [
             {
-                "pointX": -336.4526887650411,
-                "pointY": 316.8473629159502,
-                "pointZ": -772.2740332169442,
+                "pointX": -598.0749350892228,
+                "pointY": 262.35819020676604,
+                "pointZ": -619.253081518688,
                 "id": 1,
                 "icon": "./images/icon/icon1.png",
                 "label": "Label-1",
-                "title": "Title-1",
-                "desc": "Description",
+                "title": "test-3",
+                "desc": "test ",
                 "product_id": 5,
-                "product_img": "https://store.uwood.com.br/media/catalog/product//1/0/1001-walnut-01_1.jpg",
+                "product_img": "https://store.uwood.com.br/media/catalog/product//1/0/1001-walnut-01_1_1.jpg",
                 "product_price": 279,
                 "link": null,
-                "product_name": "test-3"
+                "product_name": "test-3",
+                "product_detail": "test "
             },
             {
-                "pointX": -517.9958770286927,
-                "pointY": 356.0562291185006,
-                "pointZ": -644.1305025078993,
+                "pointX": -824.6110154869343,
+                "pointY": 359.0266008431208,
+                "pointZ": -33.412701622664024,
                 "id": 2,
                 "icon": "./images/icon/icon1.png",
                 "label": "Label-2",
-                "title": "Test-4",
-                "desc": "Test-4",
-                "product_id": 6,
-                "product_img": "https://store.uwood.com.br/media/catalog/product//r/e/reloj_madera_uwood_1005_03_ad_l-2.jpg",
-                "product_price": 250,
+                "title": "test0",
+                "desc": "test ",
+                "product_id": 1,
+                "product_img": "https://store.uwood.com.br/media/catalog/product//1/0/1001-black-zebra-01_1.jpg",
+                "product_price": 299,
                 "link": null,
-                "product_name": "test-4"
+                "product_name": "test0",
+                "product_detail": "test "
             },
             {
-                "pointX": -818.5254424077758,
-                "pointY": 268.05934396269106,
-                "pointZ": -261.07494279522297,
+                "pointX": -662.2262420788932,
+                "pointY": 134.32733153110232,
+                "pointZ": 594.4850048905649,
                 "id": 3,
                 "icon": "./images/icon/icon1.png",
                 "label": "Label-3",
-                "title": "OKOKOK",
-                "desc": "OKOKOKOK",
-                "product_id": 1,
-                "product_img": "https://store.uwood.com.br/media/catalog/product//1/0/1001-black-zebra-01.jpg",
-                "product_price": 299,
+                "title": "test-4",
+                "desc": "test ",
+                "product_id": 6,
+                "product_img": "https://store.uwood.com.br/media/catalog/product//r/e/reloj_madera_uwood_1005_03_ad_l-2_1.jpg",
+                "product_price": 250,
                 "link": null,
-                "product_name": "test0"
+                "product_name": "test-4",
+                "product_detail": "test "
+            },
+            {
+                "pointX": -893.2461584878183,
+                "pointY": 1.102147271615646,
+                "pointZ": 110.04506996571995,
+                "id": 4,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-4",
+                "title": "test-2",
+                "desc": "test ",
+                "product_id": 4,
+                "product_img": "https://store.uwood.com.br/media/catalog/product//2/0/20180118150755_46801_1.jpg",
+                "product_price": 499,
+                "link": null,
+                "product_name": "test-2",
+                "product_detail": "test "
             }
         ]
     },
