@@ -48,7 +48,7 @@
 		</div>
 		<div class="annotation-price" id="annotation-price"></div>
 		<div class="annotation-product" id="annotation-product"></div>
-		<button class="button annotation-button">comprar <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
+		<button class="button annotation-button">Comprar <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
 	</div>
 	
 	<!--Hover Label for Canvas-->	
@@ -103,8 +103,7 @@
 
 			 
 
-			init();
-			animate();				
+			
 			
 			annotation.ishide = true;
 			$('.close-btn').on('click',function(){				
@@ -538,6 +537,8 @@
 					<div class="btn btn-check-out" @click="gotoStore">FINALIZAR COMPRA</div>
 				</div>`,
 				mounted() {
+					init();
+					animate();
 					let that = this
 					$('.annotation-button').on('click', function()
 					{
@@ -555,6 +556,7 @@
 						allowPageScroll: true,
 						disableFadeOut: true
 					});
+					
 				},
 				methods: {
 					showCartBox(flag) 

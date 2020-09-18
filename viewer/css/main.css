@@ -490,14 +490,14 @@ a.btn-close-cart
 .product_total_label
 {
     width: 70%;
-    font-size: 1.0rem;
+    font-size: 1.0rem;  
     font-weight: 600;
 }
 
 .product_total_price
 {
     text-align: right;
-    font-size: 1.0rem;
+    font-size: 1.1rem;
     font-weight: 600;
     width: 50%;
     color: red;
