@@ -160,6 +160,7 @@
 			};
 			assetLoader.onLoad = function ( ) {
 				$('.loading').hide();
+				$('#startButton').hide();
 			};
 			assetLoader.onProgress = function ( url, itemsLoaded, itemsTotal ) {
 				progressLoading = Math.floor((itemsLoaded / itemsTotal) * 100);
@@ -427,6 +428,7 @@
 									curProductId = data.id;
 									curMetaDescription = findProductCustomAttr(data.custom_attributes, 'meta_description');
 									curProductThumbnail = findProductCustomAttr(data.custom_attributes, 'thumbnail');
+									console.log(curProductThumbnail);
 									if(curProductThumbnail == '') 
 									{
 										curProductImg = './assets/default_product.png'
@@ -445,13 +447,14 @@
 									$('#select2-annotation-select2-container').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
 									$('.annotation .annotation-title').text(curProductName);
 									$('.annotation .annotation-body').text(curMetaDescription);
-
+									DATA[idcurr].annotation[localid].product_id = curProductId;
 									DATA[idcurr].annotation[localid].title = curProductName;
 									DATA[idcurr].annotation[localid].desc = curMetaDescription;
 									DATA[idcurr].annotation[localid].product_name = curProductName;
 									DATA[idcurr].annotation[localid].product_img = curProductImg;
 									DATA[idcurr].annotation[localid].product_price = curPrice;
 									DATA[idcurr].annotation[localid].product_detail = curMetaDescription;
+									
 									
 									$('#log').val('');
 									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');	
