@@ -68,7 +68,7 @@
 		window.DeviceOrientationControls = DeviceOrientationControls;
 		window.OrbitControls = OrbitControls;
 		
-		$(document).ready(function(){			
+		$(document).ready(function(){
 			var DATA = [];
 			var element = $('#container');
 			const annotation = $(".annotation");
@@ -134,8 +134,6 @@
 					
 					$('.btn-remove-image').off('click');
 					$('.btn-remove-image').on('click',removeImage);
-					
-					$('#startButton').hide();			
 					init();
 					animate();
 				}else{
@@ -145,6 +143,7 @@
 			.fail(function() {
 				alert( "error" );
 			});
+
 			
 			annotation.ishide = true;
 			$('.close-btn').on('click',function(){
