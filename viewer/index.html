@@ -12,6 +12,7 @@
 
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta id="theme-color" name="theme-color" content="#ffffff">
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
 	
 	
@@ -36,9 +37,15 @@
 	<!--Annotation element-->	
 	<div class="annotation">
 		<div class="close-btn">X</div>
-		<div class="annotation-title" id="annotation-title">Title</div>
-		<div class="annotation-body" id="annotation-body">Description</div>
-		<image class="annotation-img" src="./images/test/default_product.jpg" />
+		<div class="row annotation-head">
+			<div class="col-5">
+				<image class="annotation-img" src="./images/test/default_product.jpg" />
+			</div>
+			<div class="col-7">
+				<div class="annotation-title" id="annotation-title">Title</div>
+				<div class="annotation-body" id="annotation-body">Description</div>
+			</div>
+		</div>
 		<div class="annotation-price" id="annotation-price"></div>
 		<div class="annotation-product" id="annotation-product"></div>
 		<button class="button annotation-button">comprar <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
@@ -504,13 +511,13 @@
 							<div class="product_item" v-for="item in cartProductList" :key="item.id" >
 								<img :src="item.img" class="product_img" /> 
 								<div class="product_label">
-									<h4>{{ item.name }}</h4> 
+									<h5>{{ item.name }}</h5> 
 									<a class="btn_product_remove" @click="removeProduct(item.id)">
 										<img src="./images/icon/remove.png">
 									</a>
 								</div> 
 								<div class="product_price">
-									<h4>{{ item.str_price }}</h4>
+									<h5>{{ item.str_price }}</h5>
 								</div> 
 								<div class="product_qty_panel">
 									<h5 class="product_qty_label">Qtd: </h5> 
@@ -525,8 +532,8 @@
 						<h4 class="no-product"> There is no carded product. </h4>
 					</div>
 					<div class="product_total_panel">
-						<h4 class="product_total_label">Subtotal do Carrinho: </h4>
-						<h4 class="product_total_price">{{ str_total_price }}</h4>
+						<span class="product_total_label">Subtotal do Carrinho: </span>
+						<span class="product_total_price">{{ str_total_price }}</span>
 					</div>
 					<div class="btn btn-check-out" @click="gotoStore">FINALIZAR COMPRA</div>
 				</div>`,
@@ -539,7 +546,7 @@
 					});
 
 					$('.cart_list').slimScroll({
-						height: `${window.innerHeight - 140}px`,
+						height: `${window.innerHeight - 130}px`,
 						alwaysVisible: false,
 						railVisible: true,
 						railColor: '#222',
