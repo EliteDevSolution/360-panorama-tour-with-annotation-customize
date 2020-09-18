@@ -284,6 +284,7 @@ div#cart-container{
 
 .cart_hide_panel
 {
+    border-radius: 100%;
     background-image: url(../images/icon/bucket.png);
     width: 65px;
     height: 65px;

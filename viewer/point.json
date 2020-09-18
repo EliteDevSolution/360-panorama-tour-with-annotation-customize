@@ -1,4 +1,6 @@
-﻿var DATA = [
+﻿var supportgyro = true;
+
+var DATA = [
     {
         "id": 1,
         "name": "Image-1",
