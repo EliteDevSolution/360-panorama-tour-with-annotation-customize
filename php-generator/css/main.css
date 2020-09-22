@@ -187,7 +187,8 @@ button
     border: none;
     border-radius: 5px;
     text-align: left;
-    padding-left: 20px
+    padding-left: 20px;
+    margin-left:43px;
 }
 
 .annotation-img
@@ -217,6 +218,12 @@ button
 {
     margin-left: 6px;
     position: absolute;
+}
+
+.select2-container--default
+{
+    margin-top: 2px !important;
+    margin-bottom: 10px !important;
 }
 
 .select2-container--default .select2-selection--single
@@ -257,7 +264,7 @@ button
 }
 .annotation-select2
 {
-    width: 100%;
+    width: 90%;
     display: block;
 }
 

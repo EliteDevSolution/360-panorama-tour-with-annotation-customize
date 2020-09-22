@@ -61,7 +61,7 @@ if(isset($_GET['param'])){
                 //if(!file_exists($target))
                 copy($path, $target);
             }
-	        echo json_encode('{message:"success",code:200}'); 
+	        echo json_encode('{message:"success", code:200}'); 
 		break;
 		default:
 			echo 'not valid';
