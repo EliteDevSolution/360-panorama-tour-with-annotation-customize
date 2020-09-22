@@ -46,6 +46,22 @@ if(isset($_GET['param'])){
             if($uploadStatus != 0){
 	            echo json_encode('{message:"success",code:200}'); 
             }
+        break;
+        case "upload_viewer":
+            $img_List = $_GET['img_list'];
+            $point_File = $_GET['point'];
+            //point file write
+            $myfile = fopen("../viewer/point.json", "w") or die("Unable to open file!");
+            fwrite($myfile, $point_File);
+            fclose($myfile);
+            //file copy
+            foreach($img_List as $path)
+            {
+                $target = '../viewer' . ltrim($path, '.');
+                //if(!file_exists($target))
+                copy($path, $target);
+            }
+	        echo json_encode('{message:"success",code:200}'); 
 		break;
 		default:
 			echo 'not valid';

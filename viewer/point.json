@@ -1,32 +1,16 @@
-﻿var DATA = [
+var DATA = [
     {
         "id": 1,
         "name": "Image-1",
         "image": "./images/room/kitchen.jpg",
         "annotation": [
             {
-                "pointX": -598.0749350892228,
-                "pointY": 262.35819020676604,
-                "pointZ": -619.253081518688,
+                "pointX": -866.8306529999302,
+                "pointY": -84.48832085314041,
+                "pointZ": 226.86155106307388,
                 "id": 1,
                 "icon": "./images/icon/icon1.png",
                 "label": "Label-1",
-                "title": "test-3",
-                "desc": "test ",
-                "product_id": 5,
-                "product_img": "https://store.uwood.com.br/media/catalog/product//1/0/1001-walnut-01_1_1.jpg",
-                "product_price": 279,
-                "link": null,
-                "product_name": "test-3",
-                "product_detail": "test "
-            },
-            {
-                "pointX": -824.6110154869343,
-                "pointY": 359.0266008431208,
-                "pointZ": -33.412701622664024,
-                "id": 2,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-2",
                 "title": "test0",
                 "desc": "test ",
                 "product_id": 1,
@@ -37,9 +21,25 @@
                 "product_detail": "test "
             },
             {
-                "pointX": -662.2262420788932,
-                "pointY": 134.32733153110232,
-                "pointZ": 594.4850048905649,
+                "pointX": -701.1131653807545,
+                "pointY": 46.7850138432977,
+                "pointZ": -562.3622692440297,
+                "id": 2,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-2",
+                "title": "test-3",
+                "desc": "test ",
+                "product_id": 5,
+                "product_img": "https://store.uwood.com.br/media/catalog/product//1/0/1001-walnut-01_1_1.jpg",
+                "product_price": 279,
+                "link": null,
+                "product_name": "test-3",
+                "product_detail": "test "
+            },
+            {
+                "pointX": -837.4420014291301,
+                "pointY": 315.3682919269679,
+                "pointZ": -96.09160206243028,
                 "id": 3,
                 "icon": "./images/icon/icon1.png",
                 "label": "Label-3",
@@ -50,22 +50,6 @@
                 "product_price": 250,
                 "link": null,
                 "product_name": "test-4",
-                "product_detail": "test "
-            },
-            {
-                "pointX": -893.2461584878183,
-                "pointY": 1.102147271615646,
-                "pointZ": 110.04506996571995,
-                "id": 4,
-                "icon": "./images/icon/icon1.png",
-                "label": "Label-4",
-                "title": "test-2",
-                "desc": "test ",
-                "product_id": 4,
-                "product_img": "https://store.uwood.com.br/media/catalog/product//2/0/20180118150755_46801_1.jpg",
-                "product_price": 499,
-                "link": null,
-                "product_name": "test-2",
                 "product_detail": "test "
             }
         ]
