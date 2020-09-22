@@ -38,8 +38,8 @@
 	<div class="annotation">
 		<div class="close-btn">X</div>
 		<div class="row annotation-head">
-			<div class="col-5">
-				<image class="annotation-img" src="./images/test/default_product.jpg" />
+			<div class="annotation-div-img col-5">
+				<image class="annotation-img" />
 			</div>
 			<div class="col-7">
 				<div class="annotation-title" id="annotation-title">Title</div>
@@ -106,10 +106,13 @@
 
 			annotation.ishide = true;
 
+			
+			
 			setTimeout(function(){
 				init();
 				animate();
 			 }, 200);
+			 
 			$('.close-btn').on('click',function(){				
 				annotation.ishide = true;
 				annotation.css('opacity','0')
@@ -351,16 +354,23 @@
 						if(obj.object.link == null){
 							hotstop = obj.object;
 							annotation.ishide = false;
-							$('.annotation .annotation-img').show();
+							//$('.annotation .annotation-img').removeAttr('src');
+							$('.annotation .annotation-img').remove();
+							$('.prod-img').remove();
 							$('.annotation .annotation-title').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name);
 							$('.annotation .annotation-body').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].desc);
-							$('.annotation .annotation-img').attr('src', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img);
 							$('.annotation .annotation-price').html(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price));
 							$('.annotation .annotation-product').html(DATA[hotstop.iddata].annotation[hotstop.idannotation].product_name);
 							$('.annotation .annotation-product').attr('value', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_id)
 							$('.annotation .annotation-product').attr('thumbnail', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img)
 							$('.annotation .annotation-product').attr('price', DATA[hotstop.iddata].annotation[hotstop.idannotation].product_price)
-
+							var product_img = new Image();
+    						product_img.src = DATA[hotstop.iddata].annotation[hotstop.idannotation].product_img;
+							$(product_img).attr('style', 'margin-left: 14px;width: 90%;');
+							$(product_img).attr('class', 'prod-img');
+							product_img.addEventListener('load', function (event) {
+								$('.annotation .annotation-div-img').append(product_img);
+							})
 						}else{
 							changeRoom(obj.object.link);
 						}
@@ -369,7 +379,8 @@
 				
 			    event.preventDefault();
 			}
-			
+
+
 			function changeRoom(id){
 				var id = searchLink(DATA,id);
 				var progressLoading = 0;
