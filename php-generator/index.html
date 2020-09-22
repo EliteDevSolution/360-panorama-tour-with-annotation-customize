@@ -12,6 +12,8 @@
     
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<link type="text/css" rel="stylesheet" href="./css/select2.min.css">
+	<link type="text/css" rel="stylesheet" href="./css/toastr.min.css">
+
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
 </head>
 <body>
@@ -24,7 +26,7 @@
 	<div id="container"></div><div id="container-data" class="data-panel">
 		<div class="btn-hide-panel"></div>
 		<textarea id="log"></textarea>
-		<div class="btn btn-download-data">Generate</div>
+		<div class="btn btn-download-data">Upload</div>
 	</div>
 	
 	<div id="container-image">
@@ -54,6 +56,7 @@
 	
 	<script src="./lib/jquery-3.4.1.min.js"></script>
 	<script src="./lib/jquery-ui.min.js"></script>
+	<script src="./lib/toastr.min.js"></script>
 	<script src="./lib/select2.min.js"></script>	
 	<script src="./lib/Blob.js"></script>
 	<script src="./lib/FileSaver.min.js"></script>	
@@ -91,6 +94,10 @@
 			var curMetaDescription = "";
 			var curProductThumbnail = "";
 			var productUrl = "https://store.uwood.com.br/media/catalog/product/";
+			
+			toastr.options.closeButton = true;
+			toastr.options.progressBar = true;
+
 
 			function formatRepo (repo) {
 				if (repo.loading) {
@@ -288,9 +295,35 @@
 			})
 			
 			$('.btn-download-data').on('click',function(){
-				let texttosave = $('#log').val();
-				var blob = new Blob([texttosave], {type: "text/plain;charset=utf-8"});
-				saveAs(blob, "point.json");
+				var index = 0;
+				var imgFilelist = [];
+				for(index = 0; index < DATA.length; index++)
+				{
+					if(DATA[index].annotation.length > 0)
+					{
+						imgFilelist.push(DATA[index].image);
+					}
+				}
+				if(imgFilelist.length > 0)
+				{
+					let texttosave = $('#log').val();
+					//var blob = new Blob([texttosave], {type: "text/plain;charset=utf-8"});
+					$(this).html('Processing...');
+					$(this).attr('disabled', 'disabled');
+					$.get( "uploader.php?param=upload_viewer", { img_list: imgFilelist, point: texttosave } )
+					.done(function( data ) {
+						$('.btn-download-data').html('Upload');
+						$('.btn-download-data').removeAttr('disabled');
+						toastr.success('Upload was success.', 'Success!', {timeOut: 1000})
+					})
+					.fail(function() {
+						$('.btn-download-data').html('Upload');
+						$('.btn-download-data').removeAttr('disabled');
+						toastr.warning('The processing is failed.','Warning!', {timeOut: 1000})
+					});
+				} else {
+					return false;
+				}
 			})
 			
 			function onDocumentMouseDown(event) {
