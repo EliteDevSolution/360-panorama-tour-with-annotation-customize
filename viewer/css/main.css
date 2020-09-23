@@ -382,7 +382,8 @@ a.btn-close-cart
 .product_img
 {
     margin-left: 20px;
-    width:80px;
+    width: 70px;
+    height: 80px;
 }
 .product_label
 {

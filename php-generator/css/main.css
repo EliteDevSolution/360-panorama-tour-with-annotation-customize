@@ -165,7 +165,6 @@ div#startButton {
 .annotation-body {
     font-size: 14px;
     display: block;
-    min-height: 100px;
     margin-bottom: 15px;
 }
 
