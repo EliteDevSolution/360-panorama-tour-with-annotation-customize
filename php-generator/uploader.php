@@ -54,6 +54,9 @@ if(isset($_GET['param'])){
             $myfile = fopen("../viewer/point.json", "w") or die("Unable to open file!");
             fwrite($myfile, $point_File);
             fclose($myfile);
+            $samefile = fopen("./point.json", "w") or die("Unable to open file!");
+            fwrite($samefile, $point_File);
+            fclose($samefile);
             //file copy
             foreach($img_List as $path)
             {

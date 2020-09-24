@@ -49,6 +49,7 @@
 		<select class="annotation-select2" id="annotation-select2">
 		</select>
 		<div class="annotation-title" contenteditable="true" id="annotation-title">Title</div>
+		<div class="annotation-link" contenteditable="true" id="annotation-link">Link</div>
 		<div class="annotation-body" contenteditable="true" id="annotation-body">Description</div>
 		<image class="annotation-img" src="./assets/default_product.png" />
 		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
@@ -72,7 +73,6 @@
 		window.OrbitControls = OrbitControls;
 		
 		$(document).ready(function(){
-			var DATA = [];
 			var element = $('#container');
 			const annotation = $(".annotation");
 			var canvas;
@@ -112,6 +112,10 @@
 				var container = repo.text || repo.name + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(repo.price)})`;
 				return container;
 			}
+
+			$("#annotation-link").keypress(function(e) {
+				if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+			});
 			
 			var jqxhr = $.get( "uploader.php?param=image", function(e) {
 				let data = JSON.parse(e);
@@ -120,20 +124,9 @@
 					for(let i = 0;i< data.length;i++){
 						idx = i + 1;
 						$('#gallery').append('<div class="image-gallery-container" data-idx="'+idx+'" ><span class="image-gallery-idx gallery-idx-'+idx+'" data-idx="'+idx+'">'+idx+'</span><span class="btn-remove-image remove-idx-'+idx+'" data-idx="'+idx+'" data-filename="'+data[i]+'">X</span><img class="gallery-item gallery-item-'+idx+'" data-idx="'+idx+'" src="./images/room/'+data[i]+'"/></div>');
-						strfirst += '{\n'+
-						    '     "id":'+idx+',\n'+
-						    '     "name":"Image-'+idx+'",\n'+
-						    '     "image":"./images/room/'+data[i]+'",\n'+
-						    '     "annotation":[]\n'+
-						'},\n';
-						
-						DATA.push({"id":idx,
-						    "name":"Image-"+idx,
-						    "image":"./images/room/"+data[i],
-						    "annotation":[]
-						})
 					}
-					$('#log').val('var DATA = [\n'+strfirst+'];');
+					$('#log').val('');
+					$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');
 					
 					$('.gallery-item-1').addClass('selected');
 
@@ -198,8 +191,6 @@
 					)
 				});
 
-
-				
 				var geometry = new THREE.SphereBufferGeometry( 1000, 60, 40 );
 				geometry.scale( - 1, 1, 1 );
 				
@@ -210,7 +201,7 @@
 				globe = new THREE.Mesh( geometry, material );
 				globe.name = DATA[0].name;
 				scene.add( globe );
-			
+				
 				for(var j = 0;j<DATA[0].annotation.length;j++){
 					var map = new THREE.TextureLoader().load(
 						DATA[0].annotation[j].icon
@@ -225,7 +216,9 @@
 					marker.idannotation = j;
 					marker.title = DATA[0].annotation[j].title;
 					marker.arrayid = markers.length;
-					marker.link = DATA[0].annotation[j].link;
+					marker.arrayid = markersCounter;
+					marker.localid = DATA[0].annotation[j].id;
+					marker.link = null;
 					marker.product_id = DATA[0].annotation[j].product_id;
 					marker.product_name = DATA[0].annotation[j].product_name;
 					marker.product_img = DATA[0].annotation[j].product_img;
@@ -345,7 +338,7 @@
 				raycaster.setFromCamera(mouse, camera);		
 
 				if(added == true){
-					let idcurr = searchLink(DATA,currentidx);
+					let idcurr = searchLink(DATA, currentidx);
 					let localmarkcount;
 					if(DATA[idcurr].annotation.length == 0){
 						localmarkcount = DATA[idcurr].annotation.length + 1;
@@ -396,7 +389,7 @@
 							product_id: "-2",
 							product_img: "",
 							product_price:"",
-							link : null
+							link : 'Link'
 						});
 					}
 					
@@ -435,9 +428,8 @@
 								hotstop = obj.object;
 								annotation.ishide = false;
 								
-								
-								let idcurr = searchLink(DATA,currentidx);
-								let localid = searchLink(DATA[idcurr].annotation,obj.object.localid);
+								let idcurr = searchLink(DATA, currentidx);
+								let localid = searchLink(DATA[idcurr].annotation, obj.object.localid);
 
 								if(DATA[idcurr].annotation[localid].product_id == "-2")
 								{
@@ -446,13 +438,15 @@
 									$('.select2-container').hide();
 									$('#annotation-select2').hide();
 									$('.annotation-button').hide();
+									$('#annotation-link').show();
+									$('#annotation-link').html(DATA[idcurr].annotation[localid].link);
 								} else 
 								{
 									$('.annotation .annotation-body').show();
-									$('.annotation .annotation-img').show();	
+									$('.annotation .annotation-img').show();
 									$('.annotation-button').show();
+									$('#annotation-link').hide();									
 								}
-								
 								$('.annotation .annotation-title').html(DATA[idcurr].annotation[localid].title);
 								$('.annotation .annotation-body').html(DATA[idcurr].annotation[localid].desc);
 								$('.annotation .annotation-img').attr('src', DATA[idcurr].annotation[localid].product_img);
@@ -478,7 +472,7 @@
 									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
 								});
 								
-								if(DATA[idcurr].annotation[localid].product_id != "-2") {
+								if(DATA[idcurr].annotation[localid].product_id != '-2') {
 									$('#annotation-select2').off('select2:select');
 									$('#annotation-select2').select2({
 										ajax: {
@@ -518,7 +512,7 @@
 										$(this).children('[value="'+data.id+'"]').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
 										$(this).children('[value="'+data.id+'"]').attr({
 											'thumbnail':data.media_gallery_entries[0].file, 
-											'price':data.price 
+											'price':data.price
 										});
 
 										$('.annotation .annotation-img').attr('src', curProductImg);
@@ -534,11 +528,15 @@
 										DATA[idcurr].annotation[localid].product_detail = curMetaDescription;
 										$('#log').val('');
 										$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');	
-									
 									});
+								} else if(DATA[idcurr].annotation[localid].product_id == '-2'){
+									$('.annotation-link').off('input');
+									$('.annotation-link').on('input',function(){	
+										DATA[idcurr].annotation[localid].link = $('.annotation-link').html();
+										$('#log').val('');
+										$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
+									})	
 								}
-							
-
 							}else{
 								changeRoom(obj.object.link);
 							}
