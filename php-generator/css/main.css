@@ -163,9 +163,9 @@ div#startButton {
     display: block;
 }
 .annotation-body {
-    font-size: 14px;
+    font-size: 15px;
     display: block;
-    margin-bottom: 15px;
+    min-height: 40px;
 }
 
 button

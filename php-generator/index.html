@@ -76,7 +76,7 @@
 			var element = $('#container');
 			const annotation = $(".annotation");
 			var canvas;
-			var camera, scene, renderer, controls, onPointerDownPointerX, onPointerDownPointerY, raycaster, hotcaster,spriteMaterial;
+			var camera, scene, renderer, controls, onPointerDownPointerX, onPointerDownPointerY, raycaster, hotcaster,spriteMaterial, spriteMaterialChangeRoom;
 			var hotstop;
 			var globe;
 			var tooltipPosition
@@ -94,6 +94,7 @@
 			var curMetaDescription = "";
 			var curProductThumbnail = "";
 			var productUrl = "https://store.uwood.com.br/media/catalog/product/";
+			var keyName = "";
 			
 			toastr.options.closeButton = true;
 			toastr.options.progressBar = true;
@@ -190,6 +191,14 @@
 						"./images/icon/icon1.png"
 					)
 				});
+
+				spriteMaterialChangeRoom = new THREE.SpriteMaterial({
+					map: new THREE.TextureLoader(assetLoader).load(
+						"./images/icon/icon2.png"
+					)
+				});
+
+
 				
 				var geometry = new THREE.SphereBufferGeometry( 1000, 60, 40 );
 				geometry.scale( - 1, 1, 1 );
@@ -299,10 +308,8 @@
 				var imgFilelist = [];
 				for(index = 0; index < DATA.length; index++)
 				{
-					if(DATA[index].annotation.length > 0)
-					{
-						imgFilelist.push(DATA[index].image);
-					}
+					//if(DATA[index].annotation.length > 0)
+					imgFilelist.push(DATA[index].image);
 				}
 				if(imgFilelist.length > 0)
 				{
@@ -345,8 +352,12 @@
 					}else{
 						localmarkcount = DATA[idcurr].annotation[DATA[idcurr].annotation.length - 1].id + 1;
 					}
+					let annotationMaterial = spriteMaterial;
+					if(keyName == 'Alt' || keyName == "HangulMode")
+						annotationMaterial = spriteMaterialChangeRoom;
+
+					let marker = new THREE.Sprite(annotationMaterial);
 					
-					let marker = new THREE.Sprite(spriteMaterial);
 					marker.scale.set(20, 20, 10);
 					marker.arrayid = markersCounter;
 					marker.localid = localmarkcount;
@@ -355,20 +366,40 @@
 					raycaster.ray.at(900, marker.position);
 					$("#annotation-select2").val(-1);
 					
-					DATA[idcurr].annotation.push({
-						pointX : marker.position.x,
-						pointY : marker.position.y,
-						pointZ : marker.position.z,
-						id : localmarkcount,
-						icon : "./images/icon/icon1.png",
-						label : "Label-"+localmarkcount,
-						title : "Title-"+localmarkcount,
-						desc : "Description",
-						product_id: "-1",
-						product_img: "./assets/default_product.png",
-						product_price:"",
-						link : null
-					});
+					if(keyName == "Shift")
+					{
+						DATA[idcurr].annotation.push({
+							pointX : marker.position.x,
+							pointY : marker.position.y,
+							pointZ : marker.position.z,
+							id : localmarkcount,
+							icon : "./images/icon/icon1.png",
+							label : "Label-"+localmarkcount,
+							title : "Title-"+localmarkcount,
+							desc : "Description",
+							product_id: "-1",
+							product_img: "./assets/default_product.png",
+							product_price:"",
+							link : null
+						});
+					} else if(keyName == "Alt" || keyName == "HangulMode")
+					{
+						DATA[idcurr].annotation.push({
+							pointX : marker.position.x,
+							pointY : marker.position.y,
+							pointZ : marker.position.z,
+							id : localmarkcount,
+							icon : "./images/icon/icon2.png",
+							label : "Label-"+localmarkcount,
+							title : "Title-"+localmarkcount,
+							desc : "",
+							product_id: "-2",
+							product_img: "",
+							product_price:"",
+							link : null
+						});
+					}
+					
 					$('#log').val('');
 					$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');
 					
@@ -404,9 +435,23 @@
 								hotstop = obj.object;
 								annotation.ishide = false;
 								
+								
 								let idcurr = searchLink(DATA,currentidx);
 								let localid = searchLink(DATA[idcurr].annotation,obj.object.localid);
-								
+
+								if(DATA[idcurr].annotation[localid].product_id == "-2")
+								{
+									$('.annotation .annotation-body').hide();
+									$('.annotation .annotation-img').hide();	
+									$('.select2-container').hide();
+									$('#annotation-select2').hide();
+									$('.annotation-button').hide();
+								} else 
+								{
+									$('.annotation .annotation-body').show();
+									$('.annotation .annotation-img').show();	
+									$('.annotation-button').show();
+								}
 								
 								$('.annotation .annotation-title').html(DATA[idcurr].annotation[localid].title);
 								$('.annotation .annotation-body').html(DATA[idcurr].annotation[localid].desc);
@@ -432,65 +477,67 @@
 									$('#log').val('');
 									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');									
 								});
-								$('#annotation-select2').off('select2:select');
-
-								$('#annotation-select2').select2({
-									ajax: {
-										type: "GET",
-										url: "process.php?param=fetch",
-										dataType: 'json',
-										delay: 600,
-										data: function (params) {
-											let result = {"search":params.term};
-											return result;
-										},
-										processResults: function (data, params) {
-											return {
-												results:data
-											};
-										},
-										cache: true
-									},
-									tags: false,
-									placeholder: 'Search for a products',
-									minimumInputLength: 3,
-									templateResult: formatRepo,
-									templateSelection: formatRepoSelection
-								}).on('select2:select', function (e) {
-									let data = e.params.data;
-									curProductId = data.id;
-									curMetaDescription = findProductCustomAttr(data.custom_attributes, 'meta_description');
-									curProductThumbnail = findProductCustomAttr(data.custom_attributes, 'thumbnail');
-									console.log(curProductThumbnail);
-									if(curProductThumbnail == '') 
-									{
-										curProductImg = './assets/default_product.png'
-									} else {
-										curProductImg = productUrl + curProductThumbnail;
-									}
-									curPrice = data.price;
-									curProductName = data.name
-									$(this).children('[value="'+data.id+'"]').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
-									$(this).children('[value="'+data.id+'"]').attr({
-										'thumbnail':data.media_gallery_entries[0].file, 
-										'price':data.price 
-									});
-
-									$('.annotation .annotation-img').attr('src', curProductImg);
-									$('#select2-annotation-select2-container').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
-									$('.annotation .annotation-title').text(curProductName);
-									$('.annotation .annotation-body').text(curMetaDescription);
-									DATA[idcurr].annotation[localid].product_id = curProductId;
-									DATA[idcurr].annotation[localid].title = curProductName;
-									DATA[idcurr].annotation[localid].desc = curMetaDescription;
-									DATA[idcurr].annotation[localid].product_name = curProductName;
-									DATA[idcurr].annotation[localid].product_img = curProductImg;
-									DATA[idcurr].annotation[localid].product_price = curPrice;
-									DATA[idcurr].annotation[localid].product_detail = curMetaDescription;
-									$('#log').val('');
-									$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');	
 								
-								});
+								if(DATA[idcurr].annotation[localid].product_id != "-2") {
+									$('#annotation-select2').off('select2:select');
+									$('#annotation-select2').select2({
+										ajax: {
+											type: "GET",
+											url: "process.php?param=fetch",
+											dataType: 'json',
+											delay: 600,
+											data: function (params) {
+												let result = {"search":params.term};
+												return result;
+											},
+											processResults: function (data, params) {
+												return {
+													results:data
+												};
+											},
+											cache: true
+										},
+										tags: false,
+										placeholder: 'Search for a products',
+										minimumInputLength: 3,
+										templateResult: formatRepo,
+										templateSelection: formatRepoSelection
+									}).on('select2:select', function (e) {
+										let data = e.params.data;
+										curProductId = data.id;
+										curMetaDescription = findProductCustomAttr(data.custom_attributes, 'meta_description');
+										curProductThumbnail = findProductCustomAttr(data.custom_attributes, 'thumbnail');
+										if(curProductThumbnail == '') 
+										{
+											curProductImg = './assets/default_product.png'
+										} else {
+											curProductImg = productUrl + curProductThumbnail;
+										}
+										curPrice = data.price;
+										curProductName = data.name
+										$(this).children('[value="'+data.id+'"]').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
+										$(this).children('[value="'+data.id+'"]').attr({
+											'thumbnail':data.media_gallery_entries[0].file, 
+											'price':data.price 
+										});
+
+										$('.annotation .annotation-img').attr('src', curProductImg);
+										$('#select2-annotation-select2-container').text(curProductName + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(curPrice)})`);
+										$('.annotation .annotation-title').text(curProductName);
+										$('.annotation .annotation-body').text(curMetaDescription);
+										DATA[idcurr].annotation[localid].product_id = curProductId;
+										DATA[idcurr].annotation[localid].title = curProductName;
+										DATA[idcurr].annotation[localid].desc = curMetaDescription;
+										DATA[idcurr].annotation[localid].product_name = curProductName;
+										DATA[idcurr].annotation[localid].product_img = curProductImg;
+										DATA[idcurr].annotation[localid].product_price = curPrice;
+										DATA[idcurr].annotation[localid].product_detail = curMetaDescription;
+										$('#log').val('');
+										$('#log').val('var DATA = '+JSON.stringify(DATA, null, 4)+';');	
+									
+									});
+								}
+							
 
 							}else{
 								changeRoom(obj.object.link);
@@ -594,8 +641,8 @@
 			}
 			
 			function keyDown(event){
-				const keyName = event.key;				
-				if(keyName == "Shift"){
+				keyName = event.key;				
+				if(keyName == "Shift" || keyName == "Alt" || keyName == "HangulMode"){
 					added = true;
 				}
 				
@@ -605,8 +652,8 @@
 			}
 			
 			function keyUp(event){
-				const keyName = event.key;				
-				if(keyName == "Shift"){
+				keyName = event.key;				
+				if(keyName == "Shift" || keyName == "Alt" || keyName == "HangulMode"){
 					added = false;
 				}
 				if(keyName == "Control"){
