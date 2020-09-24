@@ -162,6 +162,14 @@ div#startButton {
     margin-bottom: 8px;
     display: block;
 }
+
+.annotation-link
+{
+    font-size: 20px;
+    margin-bottom: 8px;
+    display: block;
+}
+
 .annotation-body {
     font-size: 15px;
     display: block;
