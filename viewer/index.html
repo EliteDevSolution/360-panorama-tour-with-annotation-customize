@@ -351,6 +351,7 @@
 					let obj = intersects[0];
 					let uv = obj.uv;
 					if (Math.min(uv.x, uv.y) >= 0) { 
+						console.log(obj.object.link);
 						if(obj.object.link == null){
 							hotstop = obj.object;
 							annotation.ishide = false;

@@ -5,12 +5,26 @@ var DATA = [
         "image": "./images/room/kitchen.jpg",
         "annotation": [
             {
-                "pointX": -863.3830886300527,
-                "pointY": -86.47267043391942,
-                "pointZ": 238.93920084267367,
+                "pointX": -878.7770799885351,
+                "pointY": -25.198972954332472,
+                "pointZ": -192.65437036454298,
                 "id": 1,
-                "icon": "./images/icon/icon1.png",
+                "icon": "./images/icon/icon2.png",
                 "label": "Label-1",
+                "title": "Go to 2 section",
+                "desc": "",
+                "product_id": "-2",
+                "product_img": "",
+                "product_price": "",
+                "link": 2
+            },
+            {
+                "pointX": -276.9336330799076,
+                "pointY": -181.42733321167876,
+                "pointZ": -836.8940947182709,
+                "id": 2,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-2",
                 "title": "test",
                 "desc": "test ",
                 "product_id": 2,
@@ -19,6 +33,20 @@ var DATA = [
                 "link": null,
                 "product_name": "test",
                 "product_detail": "test "
+            },
+            {
+                "pointX": -799.4741862253758,
+                "pointY": -42.77101777458249,
+                "pointZ": -411.1100801220574,
+                "id": 3,
+                "icon": "./images/icon/icon2.png",
+                "label": "Label-3",
+                "title": "Go to 3 Section",
+                "desc": "",
+                "product_id": "-2",
+                "product_img": "",
+                "product_price": "",
+                "link": 3
             }
         ]
     },
