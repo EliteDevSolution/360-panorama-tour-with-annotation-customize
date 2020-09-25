@@ -52,7 +52,7 @@
 		<div class="annotation-link" contenteditable="true" id="annotation-link">Link</div>
 		<div class="annotation-body" contenteditable="true" id="annotation-body">Description</div>
 		<image class="annotation-img" src="./assets/default_product.png" />
-		<button class="button annotation-button">Add to Cart <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
+		<button class="button annotation-button"> Save<img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
 	</div>
 	
 	<script src="./lib/jquery-3.4.1.min.js"></script>
@@ -148,6 +148,12 @@
 			
 			annotation.ishide = true;
 			$('.close-btn').on('click',function(){
+				annotation.ishide = true;
+				annotation.css('opacity','0')
+				annotation.css('left','-500px');
+			})
+
+			$('.annotation-button').on('click', function() {
 				annotation.ishide = true;
 				annotation.css('opacity','0')
 				annotation.css('left','-500px');
