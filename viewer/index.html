@@ -48,7 +48,7 @@
 		</div>
 		<div class="annotation-price" id="annotation-price"></div>
 		<div class="annotation-product" id="annotation-product"></div>
-		<button class="button annotation-button">Save <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
+		<button class="button annotation-button">Comprar <img src="./images/icon/cart.png" width="32" class="annotation-cart-img"/></button>
 	</div>
 	
 	<!--Hover Label for Canvas-->	
@@ -213,7 +213,7 @@
 					};
 					
 					if(browser.isAndroid == true || browser.isIOS == true && supportgyro == true){
-						$('.gyrobutton').on('touchstart', toggleControls);
+						$('.gyrobutton').on('touchstart' ,toggleControls);
 						$('.gyrobutton').show();
 						control = 'gyro';
 						camera.position.z = 0;
@@ -349,6 +349,7 @@
 					let obj = intersects[0];
 					let uv = obj.uv;
 					if (Math.min(uv.x, uv.y) >= 0) { 
+						console.log(obj.object.link);
 						if(obj.object.link == null){
 							hotstop = obj.object;
 							annotation.ishide = false;
@@ -555,9 +556,6 @@
 					{
 						that.calcProduct()
 						that.showCartBox(1)
-						annotation.ishide = true
-						annotation.css('opacity','0')
-						annotation.css('left','-500px')
 					});
 
 					$('.cart_list').slimScroll({
@@ -573,7 +571,7 @@
 					
 				},
 				methods: {
-					showCartBox(flag)
+					showCartBox(flag) 
 					{
 						if(flag === 1)
 						{
