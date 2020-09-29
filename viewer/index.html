@@ -59,7 +59,7 @@
 	<!-- Vue -->
 	<script src="./lib/vue.min.js"></script>
 	<script src="./lib/jquery-3.4.1.min.js"></script>
-	<script src="./lib/jquery.slimscroll.min.js"></script>
+	
 
 	<script src="./point.json"></script>
 	<script type="module">
@@ -106,10 +106,8 @@
 
 			annotation.ishide = true;
 			
-			setTimeout(function(){
-				init();
-				animate();
-			 }, 2000);
+			init();
+			animate();
 			 
 			$('.close-btn').on('click',function(){				
 				annotation.ishide = true;
@@ -213,7 +211,7 @@
 					};
 					
 					if(browser.isAndroid == true || browser.isIOS == true && supportgyro == true){
-						$('.gyrobutton').on('touchstart' ,toggleControls);
+						$('.gyrobutton').on('touchstart', toggleControls);
 						$('.gyrobutton').show();
 						control = 'gyro';
 						camera.position.z = 0;
@@ -557,18 +555,6 @@
 						that.calcProduct()
 						that.showCartBox(1)
 					});
-
-					$('.cart_list').slimScroll({
-						height: `${window.innerHeight - 130}px`,
-						alwaysVisible: false,
-						railVisible: true,
-						railColor: '#222',
-						railOpacity: 0.3,
-						wheelStep: 10,
-						allowPageScroll: true,
-						disableFadeOut: true
-					});
-					
 				},
 				methods: {
 					showCartBox(flag) 
