@@ -1,5 +1,4 @@
-var supportgyro = true;
-
+var supportgyro = true; 
 var DATA = [
     {
         "id": 1,
@@ -34,7 +33,23 @@ var DATA = [
                 "product_id": "-2",
                 "product_img": "",
                 "product_price": "",
-                "link": 3
+                "link": 2
+            },
+            {
+                "pointX": -772.4293228531332,
+                "pointY": -228.27690586926198,
+                "pointZ": -401.5500319755913,
+                "id": 3,
+                "icon": "./images/icon/icon1.png",
+                "label": "Label-3",
+                "title": "test-4",
+                "desc": "test ",
+                "product_id": 6,
+                "product_img": "https://store.uwood.com.br/media/catalog/product//r/e/reloj_madera_uwood_1005_03_ad_l-2_1.jpg",
+                "product_price": 250,
+                "link": null,
+                "product_name": "test-4",
+                "product_detail": "test "
             }
         ]
     },
@@ -42,7 +57,22 @@ var DATA = [
         "id": 2,
         "name": "Image-2",
         "image": "./images/room/living-room.jpg",
-        "annotation": []
+        "annotation": [
+            {
+                "pointX": -540.0784319954498,
+                "pointY": -90.04507245563956,
+                "pointZ": 714.2877716050638,
+                "id": 1,
+                "icon": "./images/icon/icon2.png",
+                "label": "Label-1",
+                "title": "Back Door",
+                "desc": "",
+                "product_id": "-2",
+                "product_img": "",
+                "product_price": "",
+                "link": "1"
+            }
+        ]
     },
     {
         "id": 3,

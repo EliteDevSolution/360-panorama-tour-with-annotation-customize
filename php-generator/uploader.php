@@ -49,7 +49,8 @@ if(isset($_GET['param'])){
         break;
         case "upload_viewer":
             $img_List = $_GET['img_list'];
-            $point_File = $_GET['point'];
+            $point_File = "var supportgyro = true; \n";
+            $point_File .= $_GET['point'];
             //point file write
             $myfile = fopen("../viewer/point.json", "w") or die("Unable to open file!");
             fwrite($myfile, $point_File);
