@@ -1,3 +1,5 @@
+var supportgyro = true;
+
 var DATA = [
     {
         "id": 1,
@@ -19,6 +21,20 @@ var DATA = [
                 "link": null,
                 "product_name": "test",
                 "product_detail": "test "
+            },
+            {
+                "pointX": -816.1495030371566,
+                "pointY": 36.2722622044735,
+                "pointZ": -377.6031752680248,
+                "id": 2,
+                "icon": "./images/icon/icon2.png",
+                "label": "Label-2",
+                "title": "Title-2",
+                "desc": "",
+                "product_id": "-2",
+                "product_img": "",
+                "product_price": "",
+                "link": 3
             }
         ]
     },
