@@ -56,6 +56,7 @@
 	<!-- Vue -->
 	<script src="./lib/vue.min.js"></script>
 	<script src="./lib/jquery-3.4.1.min.js"></script>
+	<script src="./lib/jquery.slimscroll.min.js"></script>
 	
 
 	<script src="./point.json"></script>
@@ -552,6 +553,17 @@
 					{
 						that.calcProduct()
 						that.showCartBox(1)
+					});
+
+					$('.cart_list').slimScroll({
+						height: `${window.innerHeight - 130}px`,
+						alwaysVisible: false,
+						railVisible: true,
+						railColor: '#222',
+						railOpacity: 0.3,
+						wheelStep: 10,
+						allowPageScroll: true,
+						disableFadeOut: true
 					});
 				},
 				methods: {
