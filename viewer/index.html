@@ -56,7 +56,6 @@
 	<!-- Vue -->
 	<script src="./lib/vue.min.js"></script>
 	<script src="./lib/jquery-3.4.1.min.js"></script>
-	<script src="./lib/jquery.slimscroll.min.js"></script>
 	
 
 	<script src="./point.json"></script>
@@ -101,12 +100,33 @@
 			var scaleup = scx2;
 			var control = 'cursor';
 
+			let browser = {
+					isAndroid: /Android/.test(navigator.userAgent),
+					isCordova: !!window.cordova,
+					isEdge: /Edge/.test(navigator.userAgent),
+					isFirefox: /Firefox/.test(navigator.userAgent),
+					isChrome: /Google Inc/.test(navigator.vendor),
+					isChromeIOS: /CriOS/.test(navigator.userAgent),
+					isChromiumBased: !!window.chrome && !/Edge/.test(navigator.userAgent),
+					isIE: /Trident/.test(navigator.userAgent),
+					isIOS: /(iPhone|iPad|iPod)/.test(navigator.platform),
+					isOpera: /OPR/.test(navigator.userAgent),
+					isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
+					isTouchScreen: ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch,
+					isWebComponentsSupported: 'registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template')
+			};
+
 			annotation.ishide = true;
 			
 			setTimeout(function(){
 				init();
 				animate();
-			}, 2000);
+				if(browser.isIOS == true)
+				{
+					var dHeight = $(document).height();
+					$('.cart_list').css('max-height', `${dHeight-265}px`);
+				}
+			}, 500);
 			 
 			$('.close-btn').on('click',function(){				
 				annotation.ishide = true;
@@ -193,21 +213,11 @@
 				window.addEventListener( 'resize', onWindowResize, false );
 				
 				if (location.protocol === 'https:') {
-					let browser = {
-					  isAndroid: /Android/.test(navigator.userAgent),
-					  isCordova: !!window.cordova,
-					  isEdge: /Edge/.test(navigator.userAgent),
-					  isFirefox: /Firefox/.test(navigator.userAgent),
-					  isChrome: /Google Inc/.test(navigator.vendor),
-					  isChromeIOS: /CriOS/.test(navigator.userAgent),
-					  isChromiumBased: !!window.chrome && !/Edge/.test(navigator.userAgent),
-					  isIE: /Trident/.test(navigator.userAgent),
-					  isIOS: /(iPhone|iPad|iPod)/.test(navigator.platform),
-					  isOpera: /OPR/.test(navigator.userAgent),
-					  isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
-					  isTouchScreen: ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch,
-					  isWebComponentsSupported: 'registerElement' in document && 'import' in document.createElement('link') && 'content' in document.createElement('template')
-					};
+
+					if(browser.isIOS == true)
+					{
+						$('.cart_list').css('height', '100px !important');
+					}
 					
 					if(browser.isAndroid == true || browser.isIOS == true && supportgyro == true){
 						$('.gyrobutton').on('touchstart', toggleControls);
@@ -553,17 +563,6 @@
 					{
 						that.calcProduct()
 						that.showCartBox(1)
-					});
-
-					$('.cart_list').slimScroll({
-						height: `${window.innerHeight - 130}px`,
-						alwaysVisible: false,
-						railVisible: true,
-						railColor: '#222',
-						railOpacity: 0.3,
-						wheelStep: 10,
-						allowPageScroll: true,
-						disableFadeOut: true
 					});
 				},
 				methods: {
