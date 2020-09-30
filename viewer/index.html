@@ -28,7 +28,7 @@
 	</div>
 
 	<!--Container for Canvas -->
-	<div id="container"><div class="gyrobutton"><img width="50px" src="./images/gyro.png"/></div></div>
+	<div id="container"><div class="gyrobutton"><img style="margin-left:2px;" width="60px" src="./images/gyro.png"/></div></div>
 	<!--Container for Canvas-->		
 	
 	<!--Annotation element-->	
@@ -99,6 +99,8 @@
 			var scalestep = 0.1;
 			var scaleup = scx2;
 			var control = 'cursor';
+
+			$('.gyrobutton').show();
 
 			let browser = {
 					isAndroid: /Android/.test(navigator.userAgent),
@@ -574,6 +576,7 @@
 							{
 								this.cart_container_style = { right: '0px'}
 								this.cart_box_show = !this.cart_box_show
+								$('.gyrobutton').css('right', '365px');
 								return
 							}
 						} else 
@@ -581,10 +584,12 @@
 							if(this.cart_box_show)
 							{
 								this.cart_container_style = { right: '-350px'}
+								$('.gyrobutton').css('right', '15px');
 								
 							} else
 							{
 								this.cart_container_style = { right: '0px' }
+								$('.gyrobutton').css('right', '365px');
 							}
 
 							this.cart_box_show = !this.cart_box_show

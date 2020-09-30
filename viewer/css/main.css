@@ -91,14 +91,46 @@ div#startButton:hover{
 
 /* panorama styling */
 .gyrobutton{
-	width: 50px;
-    height: 66px;
+	width: 65px;
+    height: 65px;
     display: none;
-    position: fixed;
-    top: 10px;
-    right: 95px;
+    position: absolute;
+    top: 90px;
+    right: 15px;
     z-index: 10000;
+    border-radius: 100%;
+    background: white;
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    transition: all 0.5s ease;
 }
+
+.gyrobutton{
+	width: 65px;
+    height: 65px;
+    display: none;
+    position: absolute;
+    top: 90px;
+    right: 15px;
+    z-index: 10000;
+    border-radius: 100%;
+    background: white;
+    background-position: left top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+}
+    
+.gyrobutton:hover
+{
+    background-color: #ece9e9f5;
+}
+.gyrobutton:active
+{
+    background-color: white;
+}
+
 .popup{
 	position: absolute;
     width: 300px;

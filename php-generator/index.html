@@ -460,7 +460,7 @@
 								$('#select2-annotation-select2-container').text(DATA[idcurr].annotation[localid].product_name + ` (${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(DATA[idcurr].annotation[localid].product_price)}`);
 								if(DATA[idcurr].annotation[localid].product_id == "-1")
 								{
-									$('.annotation-button').attr('disabled', true);
+									//$('.annotation-button').attr('disabled', true);
 								}
 								$('.annotation-title').off('input');
 								$('.annotation-title').on('input',function(){	
@@ -507,6 +507,7 @@
 										curProductId = data.id;
 										curMetaDescription = findProductCustomAttr(data.custom_attributes, 'meta_description');
 										curProductThumbnail = findProductCustomAttr(data.custom_attributes, 'thumbnail');
+										//$('.annotation-button').attr('disabled', false);
 										if(curProductThumbnail == '') 
 										{
 											curProductImg = './assets/default_product.png'
