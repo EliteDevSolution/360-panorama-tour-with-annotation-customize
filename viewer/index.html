@@ -14,9 +14,6 @@
 	<meta id="theme-color" name="theme-color" content="#ffffff">
 	<link rel="stylesheet" href="./css/bootstrap.min.css">
 	<link type="text/css" rel="stylesheet" href="./css/main.css">
-	
-	
-	
 </head>
 <body>
 	<div id="app">
@@ -71,10 +68,10 @@
 		window.DeviceOrientationControls = DeviceOrientationControls;
 		window.OrbitControls = OrbitControls;
 
-		document.addEventListener('contextmenu', event => event.preventDefault());
+		//document.addEventListener('contextmenu', event => event.preventDefault());
 
 		
-		document.addEventListener('DOMContentLoaded', function () {
+		$(document).ready(function(){
 			
 			const element = $('#container');
 			const annotation = $(".annotation");
@@ -94,7 +91,6 @@
 			var intersects = [];
 			var isGoing = false;
 			var isArrived = false;
-			var supportgyro = true;
 			var scx = 80 - (10 * window.devicePixelRatio);
 			var scx2 = scx + 20; 
 			var scx3 = scx + 30; 
@@ -106,8 +102,10 @@
 
 			annotation.ishide = true;
 			
-			init();
-			animate();
+			setTimeout(function(){
+				init();
+				animate();
+			}, 2000);
 			 
 			$('.close-btn').on('click',function(){				
 				annotation.ishide = true;
